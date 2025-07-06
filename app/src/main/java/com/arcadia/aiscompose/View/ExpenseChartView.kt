@@ -14,26 +14,63 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.components.XAxis
 import com.arcadia.aiscompose.Model.Expense
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import androidx.compose.runtime.*
+import androidx.compose.material3.*
 
 @Composable
 fun ExpenseChartView(expenses: List<Expense>) {
     Column {
         Spacer(modifier = Modifier.height(48.dp))
-        AndroidView(
-            factory = { context ->
-                LineChart(context).apply {
-                    val amounts = expenses.map { it.total }
-//                    Log.d("ExpenseChartView", "Amounts: $amounts")
-                    val labels = expenses
-                        .sortedBy { it.gl_month }
-                        .map { it.gl_month.substring(5) } // Show only MM-DD
+        var selectedCoa by remember { mutableStateOf<String?>(null) }
+        val coaList = expenses.map { it.coa_name }.distinct()
 
-                    // Entry data pengeluaran
+        val filteredExpenses = selectedCoa?.let { selected ->
+            expenses.filter { it.coa_name == selected }
+        } ?: expenses
+
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            // Dropdown Filter
+            var expanded by remember { mutableStateOf(false) }
+
+            OutlinedButton(onClick = { expanded = true }) {
+                Text(selectedCoa ?: "Pilih Akun COA")
+            }
+
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                DropdownMenuItem(
+                    text = { Text("Semua Akun") },
+                    onClick = {
+                        selectedCoa = null
+                        expanded = false
+                    }
+                )
+                coaList.forEach { coa ->
+                    DropdownMenuItem(
+                        text = { Text(coa) },
+                        onClick = {
+                            selectedCoa = coa
+                            expanded = false
+                        }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AndroidView(
+                factory = { context ->
+                    LineChart(context)
+                },
+                update = { chart ->
+                    val amounts = filteredExpenses.map { it.total }
+                    val labels = filteredExpenses
+                        .sortedBy { it.gl_month }
+                        .map { it.gl_month.substring(5) }
+
                     val entries = amounts.mapIndexed { index, value ->
                         Entry(index.toFloat(), value.toFloat())
                     }
 
-                    // MA100 dan MA200
                     val ma100 = calculateMA(amounts, 2)
                     val ma100Entries = ma100.mapIndexedNotNull { index, value ->
                         value?.let { Entry(index.toFloat(), it.toFloat()) }
@@ -43,7 +80,7 @@ fun ExpenseChartView(expenses: List<Expense>) {
                     val ma200Entries = ma200.mapIndexedNotNull { index, value ->
                         value?.let { Entry(index.toFloat(), it.toFloat()) }
                     }
-                    // DataSet
+
                     val setPengeluaran = LineDataSet(entries, "Pengeluaran").apply {
                         color = AndroidColor.BLACK
                         valueTextSize = 8f
@@ -63,29 +100,29 @@ fun ExpenseChartView(expenses: List<Expense>) {
                         lineWidth = 2f
                     }
 
-                    val lineData = LineData(setPengeluaran, setMA100, setMA200)
-                    this.data = lineData
+                    chart.data = LineData(setPengeluaran, setMA100, setMA200)
 
-                    this.description.isEnabled = false
-                    this.legend.isEnabled = true
+                    chart.description.isEnabled = false
+                    chart.legend.isEnabled = true
 
-                    // Atur X Axis
-                    xAxis.position = XAxis.XAxisPosition.BOTTOM
-                    xAxis.setDrawGridLines(false)
+                    chart.xAxis.apply {
+                        position = XAxis.XAxisPosition.BOTTOM
+                        setDrawGridLines(false)
+                        valueFormatter = IndexAxisValueFormatter(labels)
+                    }
 
-                    xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-//            xAxis.granularity = 1f
-//            xAxis.labelRotationAngle = -45f // optional untuk miringkan label
-
-                    axisRight.isEnabled = false
-                    invalidate()
-                }
-            }, modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-        )
+                    chart.axisRight.isEnabled = false
+                    chart.invalidate()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            )
+        }
     }
+
 }
+
 fun calculateMA(values: List<Double>, period: Int): List<Double?> {
     return values.mapIndexed { index, _ ->
         if (index >= period - 1) {
@@ -94,6 +131,4 @@ fun calculateMA(values: List<Double>, period: Int): List<Double?> {
         } else null
     }
 }
-
-
 

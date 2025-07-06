@@ -101,9 +101,9 @@ class TransactionViewModel  : ViewModel() {
         viewModelScope.launch {
             try {
                 val data = api.getExpenseReport()
-                val filteredData = data.filter { it.coa_name == "Beban Bensin" }
+                //val filteredData = data.filter { it.coa_name == "Beban Bensin" }
                 //Log.d("ExpenseChartView", "Expenses size: ${filteredData.size}")
-                _expenseList.value = filteredData
+                _expenseList.value = data
 
             } catch (e: Exception) {
                 e.printStackTrace()
