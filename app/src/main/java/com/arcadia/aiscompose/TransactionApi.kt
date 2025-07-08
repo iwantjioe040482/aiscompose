@@ -10,6 +10,8 @@ import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.Expense
+import com.arcadia.aiscompose.Model.TransferRequest
+import com.arcadia.aiscompose.Model.TransferResponse
 
 interface TransactionApi {
     @GET("COAExpense")
@@ -50,6 +52,9 @@ interface TransactionApi {
 
     @POST("bcaincome")
     suspend fun submitBCAIncome(@Body expense: Transaction)
+
+    @POST("/transfer")
+    suspend fun postTransfer(@Body request: TransferRequest): TransferResponse
 
     @POST("cashexpense")
     suspend fun submitCashExpense(@Body expense: Transaction)

@@ -72,11 +72,13 @@ fun MainScreen(viewModel: SidebarViewModel = viewModel()) {
                         "ElectricityInput" -> ElectricityInputScreen()
                         "Transaction" -> ExpenseTrackerScreen()
                         "Incomes" -> IncomeTrackerScreen()
+                        "Transfer" -> TransferInputForm()
                         "Pivot" -> PivotReportScreen()
                         "Tax" -> TaxScreen()
                         "CreditCard" -> CreditCardScreen()
                         "Insurance" -> InsuranceScreen()
                         "Expense" -> ExpenseScreen()
+                        "Assets" -> AssetScreen()
                         else -> Text("Select a menu item")
                     }
                 }

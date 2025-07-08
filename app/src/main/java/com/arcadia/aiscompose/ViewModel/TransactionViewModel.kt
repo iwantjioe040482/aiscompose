@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arcadia.aiscompose.Model.CreditCardItem
+import com.arcadia.aiscompose.Model.Electricity
 import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.MonthlyPivot
+import com.arcadia.aiscompose.Model.TransferRequest
+import com.arcadia.aiscompose.Model.TransferResponse
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.Transaction
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +38,9 @@ class TransactionViewModel  : ViewModel() {
 
     private val _balance = MutableStateFlow(0.0)
     val balance: StateFlow<Double> = _balance
+
+    private val _transferResult = MutableStateFlow<TransferResponse?>(null)
+    val transferResult: StateFlow<TransferResponse?> = _transferResult
 
     private val api: TransactionApi
 
@@ -121,6 +127,22 @@ class TransactionViewModel  : ViewModel() {
                 e.printStackTrace()
             }
         }
+    }
+
+
+    fun submitTransfer(from: String,To: String, Amount : Double, onSuccess: () -> Unit = {}, onError: (Throwable) -> Unit = {})
+    {
+        viewModelScope.launch {
+            try {
+                val request = TransferRequest(from, To, Amount)
+                val response =api.postTransfer(request)
+                _transferResult.value = response
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+
     }
 
     fun submitIncome(typetransaction: String,expense: Transaction, onSuccess: () -> Unit = {}, onError: (Throwable) -> Unit = {})

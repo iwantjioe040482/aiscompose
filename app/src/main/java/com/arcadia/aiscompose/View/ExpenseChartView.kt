@@ -16,13 +16,15 @@ import com.arcadia.aiscompose.Model.Expense
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import androidx.compose.runtime.*
 import androidx.compose.material3.*
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 @Composable
 fun ExpenseChartView(expenses: List<Expense>) {
     Column {
         Spacer(modifier = Modifier.height(48.dp))
-        var selectedCoa by remember { mutableStateOf<String?>(null) }
+        //var selectedCoa by remember { mutableStateOf<String?>(null) }
         val coaList = expenses.map { it.coa_name }.distinct()
+        var selectedCoa by remember { mutableStateOf(coaList.firstOrNull()) }
 
         val filteredExpenses = selectedCoa?.let { selected ->
             expenses.filter { it.coa_name == selected }
@@ -37,13 +39,13 @@ fun ExpenseChartView(expenses: List<Expense>) {
             }
 
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                DropdownMenuItem(
-                    text = { Text("Semua Akun") },
-                    onClick = {
-                        selectedCoa = null
-                        expanded = false
-                    }
-                )
+//                DropdownMenuItem(
+//                    text = { Text("Semua Akun") },
+//                    onClick = {
+//                        selectedCoa = null
+//                        expanded = false
+//                    }
+//                )
                 coaList.forEach { coa ->
                     DropdownMenuItem(
                         text = { Text(coa) },
@@ -85,6 +87,7 @@ fun ExpenseChartView(expenses: List<Expense>) {
                         color = AndroidColor.BLACK
                         valueTextSize = 8f
                         setDrawCircles(false)
+                        setDrawValues(true)
                         lineWidth = 2f
                     }
 
@@ -100,7 +103,19 @@ fun ExpenseChartView(expenses: List<Expense>) {
                         lineWidth = 2f
                     }
 
-                    chart.data = LineData(setPengeluaran, setMA100, setMA200)
+                    val dataSets = mutableListOf<ILineDataSet>(setPengeluaran)
+                    if (ma100Entries.isNotEmpty()) {
+                        dataSets.add(setMA100)
+                    }
+                    if (ma200Entries.isNotEmpty()) {
+                        dataSets.add(setMA200)
+                    }
+
+                    chart.data = LineData(dataSets)
+
+                    val markerView = ExpenseMarkerView(chart.context)
+                    markerView.chartView = chart
+                    chart.marker = markerView
 
                     chart.description.isEnabled = false
                     chart.legend.isEnabled = true
@@ -110,6 +125,7 @@ fun ExpenseChartView(expenses: List<Expense>) {
                         setDrawGridLines(false)
                         valueFormatter = IndexAxisValueFormatter(labels)
                     }
+                    chart.legend.isEnabled = dataSets.size > 1
 
                     chart.axisRight.isEnabled = false
                     chart.invalidate()
