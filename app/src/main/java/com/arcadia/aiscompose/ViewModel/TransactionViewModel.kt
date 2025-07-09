@@ -157,6 +157,7 @@ class TransactionViewModel  : ViewModel() {
                     "Dana" -> api.submitDanaIncome(expense)
                     "GoPay" -> api.submitGoPayIncome(expense)
                     "Hana" -> api.submitHanaIncome(expense)
+                    "Mandiri" ->  api.submitMandiriIncome(expense)
                     "Octo" -> api.submitOctoIncome(expense)
                     "Ovo" -> api.submitOvoIncome(expense)
                     "Permata" -> api.submitPermataIncome(expense)
@@ -183,10 +184,11 @@ class TransactionViewModel  : ViewModel() {
                     "Flazz" -> api.submitFlazzExpense(expense)
                     "GoPay" -> api.submitGoPayExpense(expense)
                     "Hana" ->  api.submitHanaExpense(expense)
+                    "Mandiri" ->  api.submitMandiriExpense(expense)
                     "Octo" -> api.submitOctoExpense(expense)
                     "Ovo" -> api.submitOvoExpense(expense)
                     "Permata" ->  api.submitPermataExpense(expense)
-                    "Shopee" -> api.submitShopeeExpense(expense)
+                    "ShopeePay" -> api.submitShopeeExpense(expense)
 
                     // Tambahkan jika ada lainnya
                     else -> throw IllegalArgumentException("Unknown transaction type: $typetransaction")

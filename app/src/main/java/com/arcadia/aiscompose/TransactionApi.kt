@@ -89,6 +89,12 @@ interface TransactionApi {
     @POST("hanaincome")
     suspend fun submitHanaIncome(@Body expense: Transaction)
 
+    @POST("mandiriincome")
+    suspend fun submitMandiriIncome(@Body expense: Transaction)
+
+    @POST("mandiriexpense")
+    suspend fun submitMandiriExpense(@Body expense: Transaction)
+
     @POST("octoincome")
     suspend fun submitOctoIncome(@Body expense: Transaction)
 

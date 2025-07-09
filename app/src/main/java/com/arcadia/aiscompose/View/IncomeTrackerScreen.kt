@@ -94,7 +94,7 @@ fun IncomeTrackerScreen() {
                 ) {
                     listOf(
                         "Allo Bank", "BCA", "Cash", "CIMB", "Dana", "Flazz",
-                        "GoPay", "Hana", "Octo", "Ovo", "Permata", "ShopeePay"
+                        "GoPay", "Hana","Mandiri", "Octo", "Ovo", "Permata", "ShopeePay"
                     ).forEach {
                         DropdownMenuItem(
                             text = { Text(it) },

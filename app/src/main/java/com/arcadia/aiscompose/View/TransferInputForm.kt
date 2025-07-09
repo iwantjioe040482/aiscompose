@@ -21,7 +21,7 @@ import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 @Composable
 fun TransferInputForm() {
     val viewModel: TransactionViewModel = viewModel()
-    val paymentOptions = listOf("BCA", "CIMB", "Cash","Flazz","Hana","Octo", "Ovo", "ShopeePay")
+    val paymentOptions = listOf("BCA", "CIMB", "Cash","Flazz","Hana","Mandiri","Octo", "Ovo", "ShopeePay")
 
     var source by remember { mutableStateOf(paymentOptions.first()) }
     var destination by remember { mutableStateOf(paymentOptions.last()) }

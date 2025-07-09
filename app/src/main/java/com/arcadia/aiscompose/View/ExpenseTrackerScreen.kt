@@ -75,7 +75,7 @@ fun ExpenseTrackerScreen() {
                     expanded = transactionExpanded,
                     onDismissRequest = { transactionExpanded = false }
                 ) {
-                    listOf("Allo Bank", "BCA", "Cash","CIMB","Dana", "Flazz", "GoPay","Hana","Octo", "Ovo","Permata", "ShopeePay").forEach {
+                    listOf("Allo Bank", "BCA", "Cash","CIMB","Dana", "Flazz", "GoPay","Hana","Mandiri","Octo", "Ovo","Permata", "ShopeePay").forEach {
                         DropdownMenuItem(
                             text = { Text(it) },
                             onClick = {
