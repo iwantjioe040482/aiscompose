@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.*
 import com.github.mikephil.charting.utils.MPPointF
+import androidx.compose.foundation.isSystemInDarkTheme
 
 @Composable
 fun WaterLineChartView(data: List<WaterView>) {
+    val isDarkTheme = isSystemInDarkTheme()
     val entries = data
         .sortedBy { it.date }
         .mapIndexed { index, item -> Entry(index.toFloat(), item.difference.toFloat()) }
@@ -33,9 +35,14 @@ fun WaterLineChartView(data: List<WaterView>) {
         LineChart(context).apply {
             val dataSet = LineDataSet(entries, "Water Usage")
             dataSet.color = Color.BLUE
-            dataSet.valueTextColor = Color.BLACK
+            val legendColor = if (isDarkTheme) Color.WHITE else Color.BLACK
+
+            dataSet.valueTextColor = legendColor
             dataSet.setCircleColor(Color.BLUE)
             dataSet.setDrawValues(true)
+
+            axisLeft.textColor = legendColor
+            axisLeft.setDrawGridLines(true) // Opsional
 
             this.data = LineData(dataSet)
 
@@ -47,11 +54,13 @@ fun WaterLineChartView(data: List<WaterView>) {
             xAxis.valueFormatter = IndexAxisValueFormatter(labels)
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.granularity = 1f
+            xAxis.textColor=legendColor
             xAxis.setDrawGridLines(false)
 
             axisRight.isEnabled = false
             description.isEnabled = false
             legend.isEnabled = false
+            legend.textColor=legendColor
 
             invalidate()
         }

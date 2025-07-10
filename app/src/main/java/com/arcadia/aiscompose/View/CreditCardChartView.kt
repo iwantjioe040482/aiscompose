@@ -21,10 +21,13 @@ import com.github.mikephil.charting.data.PieEntry
 import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.layout.fillMaxWidth
 import com.arcadia.aiscompose.Model.CreditCardItem
+import androidx.compose.foundation.isSystemInDarkTheme
 
 @Composable
 fun CreditCardChartView(data: List<CreditCardItem>
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
+
     AndroidView(factory = { context ->
         PieChart(context).apply {
 
@@ -53,7 +56,14 @@ fun CreditCardChartView(data: List<CreditCardItem>
             this.data = data
             this.description.isEnabled = false
             this.centerText = "Total"
-            this.setEntryLabelColor(AndroidColor.BLACK)
+
+
+            val legendColor = if (isDarkTheme) AndroidColor.WHITE else AndroidColor.BLACK
+            this.legend.textColor = legendColor
+            this.setEntryLabelColor(legendColor)
+            this.setCenterTextColor(legendColor) // opsional
+
+            //this.setEntryLabelColor(AndroidColor.BLACK)
             this.animateY(1000)
             this.invalidate() // refresh
         }

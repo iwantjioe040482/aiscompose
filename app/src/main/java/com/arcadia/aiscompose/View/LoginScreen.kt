@@ -7,12 +7,33 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.arcadia.aiscompose.ViewModel.LoginViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun LoginScreen(onLogin: (String, String) -> Unit = { _, _ -> }) {
+//fun LoginScreen(onLogin: (String, String) -> Unit = { _, _ -> }) {
+fun LoginScreen(onLoginSuccess: (String) -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+    val viewModel: LoginViewModel = viewModel()
+//    val loginResult = viewModel.loginResult.value
+    //val loginResult = viewModel.loginResult.collectAsState().value
+    val loginResult by viewModel.loginResult.collectAsStateWithLifecycle()
+//    LaunchedEffect(loginResult) {
+//        if (loginResult != null) {
+//            onLogin(email, password) // ini akan trigger navigasi dari luar
+//        }
+//    }
+    LaunchedEffect(loginResult?.token) {
+        viewModel.resetLoginState()
+        val token = loginResult?.token
+        if (!token.isNullOrBlank()) {
+            viewModel.resetLoginState()
+            onLoginSuccess(token) // ✅ aman karena sudah dicek null dan blank
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -32,7 +53,7 @@ fun LoginScreen(onLogin: (String, String) -> Unit = { _, _ -> }) {
                 email = it
                 isError = false
             },
-            label = { Text("Email") },
+            label = { Text("Username") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             isError = isError
@@ -70,12 +91,23 @@ fun LoginScreen(onLogin: (String, String) -> Unit = { _, _ -> }) {
                 if (email.isBlank() || password.isBlank()) {
                     isError = true
                 } else {
-                    onLogin(email, password)
+                    viewModel.login(email, password)
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        val errorMessage = viewModel.errorMessage.value
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }

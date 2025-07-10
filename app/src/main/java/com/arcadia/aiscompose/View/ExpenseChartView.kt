@@ -17,9 +17,11 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import androidx.compose.runtime.*
 import androidx.compose.material3.*
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import androidx.compose.foundation.isSystemInDarkTheme
 
 @Composable
 fun ExpenseChartView(expenses: List<Expense>) {
+    val isDarkTheme = isSystemInDarkTheme()
     Column {
         Spacer(modifier = Modifier.height(48.dp))
         //var selectedCoa by remember { mutableStateOf<String?>(null) }
@@ -83,8 +85,10 @@ fun ExpenseChartView(expenses: List<Expense>) {
                         value?.let { Entry(index.toFloat(), it.toFloat()) }
                     }
 
+                    val legendColor = if (isDarkTheme) AndroidColor.WHITE else AndroidColor.BLACK
+
                     val setPengeluaran = LineDataSet(entries, "Pengeluaran").apply {
-                        color = AndroidColor.BLACK
+                        color = legendColor
                         valueTextSize = 8f
                         setDrawCircles(false)
                         setDrawValues(true)
@@ -120,11 +124,20 @@ fun ExpenseChartView(expenses: List<Expense>) {
                     chart.description.isEnabled = false
                     chart.legend.isEnabled = true
 
+                    chart.legend.textColor=legendColor
+
+
+                    chart.axisLeft.textColor = legendColor
+                    chart.axisLeft.setDrawGridLines(true) // Opsional
+
                     chart.xAxis.apply {
+
                         position = XAxis.XAxisPosition.BOTTOM
                         setDrawGridLines(false)
                         valueFormatter = IndexAxisValueFormatter(labels)
+                        textColor=legendColor
                     }
+
                     chart.legend.isEnabled = dataSets.size > 1
 
                     chart.axisRight.isEnabled = false

@@ -9,6 +9,7 @@ import com.arcadia.aiscompose.Model.MonthlyPivot
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.CreditCardItem
+import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.TransferRequest
 import com.arcadia.aiscompose.Model.TransferResponse
@@ -34,6 +35,9 @@ interface TransactionApi {
 
     @GET("expense")
     suspend fun getExpense(): List<TransactionView>
+
+    @GET("dailyexpense")
+    suspend fun getDailyExpense(): List<DailyReport>
 
     @GET("monthlyexpense")
     suspend fun getExpenseReport(): List<Expense>

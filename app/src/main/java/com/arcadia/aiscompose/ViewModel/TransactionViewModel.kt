@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arcadia.aiscompose.Model.CreditCardItem
+import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Electricity
 import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.InsuranceItem
@@ -26,6 +27,9 @@ class TransactionViewModel  : ViewModel() {
 
     private val _expenseList = MutableStateFlow<List<Expense>>(emptyList())
     val expenseList: StateFlow<List<Expense>> get() = _expenseList
+
+    private val _dailyexpenseList = MutableStateFlow<List<DailyReport>>(emptyList())
+    val dailyexpenseList: StateFlow<List<DailyReport>> get() = _dailyexpenseList
 
     private val _taxList = MutableStateFlow<List<TaxItem>>(emptyList())
     val taxList: StateFlow<List<TaxItem>> get() = _taxList
@@ -110,6 +114,19 @@ class TransactionViewModel  : ViewModel() {
                 //val filteredData = data.filter { it.coa_name == "Beban Bensin" }
                 //Log.d("ExpenseChartView", "Expenses size: ${filteredData.size}")
                 _expenseList.value = data
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    fun fetchDailyExpense() {
+        viewModelScope.launch {
+            try {
+                val data = api.getDailyExpense()
+                _dailyexpenseList.value = data
 
             } catch (e: Exception) {
                 e.printStackTrace()

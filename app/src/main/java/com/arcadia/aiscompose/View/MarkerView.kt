@@ -15,7 +15,9 @@ class MarkerView(context: Context, private val labels: List<String>) : MarkerVie
         e?.let {
             val index = it.x.toInt()
             val label = labels.getOrNull(index) ?: "-"
-            markerText.text = "Value: ${it.y.toFloat()}"
+            val formattedValue = String.format("%,.2f", it.y) // ← Format with comma and 2 decimals
+            markerText.text = "Value: $formattedValue"
+            //markerText.text = "Value: ${it.y.toFloat()}"
         }
         super.refreshContent(e, highlight)
     }

@@ -12,17 +12,21 @@ import kotlinx.coroutines.launch
 import com.arcadia.aiscompose.ViewModel.SidebarViewModel
 import com.arcadia.aiscompose.Model.MenuItem
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import com.arcadia.aiscompose.ViewModel.LoginViewModel
+import androidx.compose.foundation.isSystemInDarkTheme
+//import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: SidebarViewModel = viewModel()) {
+fun MainScreen(token: String,  onLogout: () -> Unit,viewModel: SidebarViewModel = viewModel()) {
+    val isDarkTheme = isSystemInDarkTheme()
+    //var isLoggedIn by remember { mutableStateOf(true) } // ✅ kontrol tampilan Login/Main
 //    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 //    val scope = rememberCoroutineScope()
 //    val menuItems by viewModel.menuItems.collectAsState()
@@ -39,26 +43,34 @@ fun MainScreen(viewModel: SidebarViewModel = viewModel()) {
 //            )
 //        }
 //    }
+//    if (!isLoggedIn) {
+//        LoginScreen() // ✅ hanya tampilkan Login
+//    } else {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    //val legendColor = if (isDarkTheme) Color.White else Color.Black
+
+
 //    val menuItemsState = viewModel.menuItems.collectAsState()
 //    val selectedItemState = viewModel.selectedItem.collectAsState()
-    val menuItems by viewModel.menuItems.collectAsState()
-    val selectedItem by viewModel.selectedItem.collectAsState()
-    val expandedMap = remember { mutableStateMapOf<String, Boolean>() }
+            val menuItems by viewModel.menuItems.collectAsState()
+            val selectedItem by viewModel.selectedItem.collectAsState()
+            val expandedMap = remember { mutableStateMapOf<String, Boolean>() }
 //    val menuItems = menuItemsState.value
 //    val selectedItem = selectedItemState.value
-    val scrollState = rememberScrollState()
+            val scrollState = rememberScrollState()
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    //.verticalScroll(scrollState)
-                    .padding(8.dp)
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    ModalDrawerSheet(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            //.verticalScroll(scrollState)
+                            .padding(8.dp)
+//                        ,
+//                        drawerContainerColor = legendColor // ← tambahkan ini untuk mengubah background
             ) {
                 Text("Menu", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(16.dp))
                 Divider()
@@ -82,7 +94,16 @@ fun MainScreen(viewModel: SidebarViewModel = viewModel()) {
                                 viewModel.selectMenuItem(it)
                                 scope.launch { drawerState.close() }
                             },
-                            expandedMap = expandedMap
+                            onLogout = {
+                                viewModel.selectMenuItem(menuItems.firstOrNull())
+                                //viewModel.selectMenuItem(null) // ✅ optional: clear selected menu
+                                onLogout() // ✅ call back to parent
+//                                isLoggedIn = false // ✅ keluar dari main layout
+//                                // Langsung atur ke Login tanpa tergantung selectedItem
+//                                viewModel.selectMenuItem(item.copy(route = "Login")) // atau kosongkan selectedItem
+                            },
+                            expandedMap = expandedMap,
+                            token = token // ✅ Tambahkan ini
                         )
                     }
                 }
@@ -118,13 +139,19 @@ fun MainScreen(viewModel: SidebarViewModel = viewModel()) {
                         "CreditCard" -> CreditCardScreen()
                         "Insurance" -> InsuranceScreen()
                         "Expense" -> ExpenseScreen()
+                        "Daily" -> DailyExpenseScreen()
                         "Assets" -> AssetScreen()
+//                        "Logout" -> {
+//                            // Bisa clear session, token, dsb di sini
+//                            LoginScreen(isLoggedIn = false)
+//                        }
                         else -> Text("Select a menu item")
                     }
                 }
             }
         }
     }
+//        }
 }
 
 @Composable
@@ -133,8 +160,12 @@ fun MenuItemView(
     selectedItem: MenuItem?,
     onClick: (MenuItem) -> Unit,
     expandedMap: MutableMap<String, Boolean>,
-    indent: Dp = 0.dp
+    onLogout: () -> Unit = {},
+    indent: Dp = 0.dp,
+    token: String // ⬅️ Tambah ini
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val viewModel: LoginViewModel = viewModel()
     val isSelected = item == selectedItem
     val isExpandable = item.children != null
 
@@ -144,16 +175,34 @@ fun MenuItemView(
                 .fillMaxWidth()
                 .padding(start = indent, top = 8.dp, bottom = 8.dp)
                 .clickable {
-                    if (isExpandable) {
-                        expandedMap[item.id] = !(expandedMap[item.id] ?: false)
-                    } else {
-                        onClick(item)
+                    when {
+                        isExpandable -> {
+                            expandedMap[item.id] = !(expandedMap[item.id] ?: false)
+                        }
+                        item.route == "Logout" -> {
+                            //val token = viewModel.loginResult.value?.token
+                            if (!token.isNullOrBlank()) {
+                                coroutineScope.launch {
+                                    viewModel.logout(token)
+                                    onLogout()
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    onLogout()
+                                }
+//                                println("⚠️ Token tidak ditemukan.")
+                            }
+                        }
+                        else -> {
+                            onClick(item)
+                        }
                     }
                 }
         ) {
             Text(
                 text = item.label,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black
+                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black,
+                fontSize = 18.sp // Ukuran font diperbesar
             )
         }
 
@@ -164,8 +213,10 @@ fun MenuItemView(
                     item = child,
                     selectedItem = selectedItem,
                     onClick = onClick,
+                    onLogout = onLogout,
                     expandedMap = expandedMap,
-                    indent = indent + 16.dp
+                    indent = indent + 16.dp,
+                    token = token // ⬅️ Kirim token
                 )
             }
         }

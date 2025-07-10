@@ -31,6 +31,7 @@ class SidebarViewModel : ViewModel() {
                         label = "Report",
                         id = "Report",
                         children = listOf(
+                            MenuItem(route = "Daily", label = "Expense Daily", id = "Daily"),
                             MenuItem(route = "Pivot", label = "Expense Monthly Pivot", id = "Pivot"),
                             MenuItem(route = "Expense", label = "Expense Monthly", id = "Expense"),
                             MenuItem(route = "Tax", label = "Tax", id = "Tax"),
@@ -39,7 +40,9 @@ class SidebarViewModel : ViewModel() {
                         )
                     ),
 
-                    MenuItem(route = "Assets", label = "Assets", id = "Assets")
+                    MenuItem(route = "Assets", label = "Assets", id = "Assets"),
+                    // Logout item
+                    MenuItem(route = "Logout", label = "Logout", id = "Logout")
                 )
 //                listOf(
 //                MenuItem(route = "Home", label = "Home", id = "Home"),
@@ -61,7 +64,7 @@ class SidebarViewModel : ViewModel() {
         }
     }
 
-    fun selectMenuItem(item: MenuItem) {
+    fun selectMenuItem(item: MenuItem?) {
         _selectedItem.value = item
     }
 }
