@@ -17,10 +17,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.runtime.remember
+import com.arcadia.aiscompose.Model.Assets
+import com.arcadia.aiscompose.Model.ElectricityView
+import com.arcadia.aiscompose.Model.WaterView
+import com.arcadia.aiscompose.Repository.WaterViewModelFactory
+import com.arcadia.aiscompose.Repository.ElectricityViewModelFactory
+
 
 @Composable
 fun isLandscape(): Boolean {
@@ -29,14 +37,29 @@ fun isLandscape(): Boolean {
 }
 
 @Composable
-fun HomeScreen() {
-    val vm: ElectricityViewModel = viewModel()
-    val vm2: WaterViewModel=viewModel()
+fun HomeScreen(token: String) {
+    //val vm: ElectricityViewModel = viewModel()
+   // val vm2: WaterViewModel=viewModel()
 
-    LaunchedEffect(Unit) {
-        vm.fetchElectricity()
-        vm2.fetchWater()
+    //val factory = remember { WaterViewModelFactory(token) }
+    val waterFactory = remember { WaterViewModelFactory(token) }
+    val electricityFactory = remember { ElectricityViewModelFactory(token) }
+
+    val viewModel: WaterViewModel = viewModel(factory = waterFactory)
+    val viewModel2: ElectricityViewModel = viewModel(factory = electricityFactory)
+
+    LaunchedEffect(token) {
+        viewModel2.setToken(token)
+        viewModel2.fetchElectricity()
+        viewModel.setToken(token)
+        viewModel.fetchWater()
+        Log.d("WaterDebug", "HomeScreem: ${token} data")
     }
+
+//    LaunchedEffect(Unit) {
+//        vm.fetchElectricity()
+//        //vm2.fetchWater()
+//    }
 
     val landscape = isLandscape()
 
@@ -50,7 +73,8 @@ fun HomeScreen() {
                 .weight(1f)
                 .padding(8.dp)) {
                 Spacer(modifier = Modifier.height(32.dp))
-                val values by vm.electricityList.collectAsState()
+                //val values by vm.electricityList.collectAsState()
+                val values : List<ElectricityView> = viewModel2.electricityList
 
                 if (values.isNotEmpty()) {
                     Column {
@@ -74,7 +98,9 @@ fun HomeScreen() {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 //val values2 = vm2.waterList.value
-                val values2 by vm2.waterList.collectAsState()
+                //val values2 by vm2.waterList.collectAsState()
+                val values2 : List<WaterView> = viewModel.waterList
+
 
                 if (values2.isNotEmpty()) {
                     Column {
@@ -97,7 +123,8 @@ fun HomeScreen() {
     } else {
             Column(modifier = Modifier
                 .padding(1.dp)) {
-                val values by vm.electricityList.collectAsState()
+                //val values by vm.electricityList.collectAsState()
+                val values : List<ElectricityView> = viewModel2.electricityList
 
                 if (values.isNotEmpty()) {
                     Column {
@@ -116,7 +143,8 @@ fun HomeScreen() {
                 // Chart 1
 
                 //val values2 = vm2.waterList.value
-                val values2 by vm2.waterList.collectAsState()
+                //val values2 by vm2.waterList.collectAsState()
+                val values2 : List<WaterView> = viewModel.waterList
 
                 if (values2.isNotEmpty()) {
                     Column {

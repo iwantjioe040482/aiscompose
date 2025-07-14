@@ -17,16 +17,30 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.padding
+import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.InsuranceItem
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 
 @Composable
-fun InsuranceScreen(viewModel: TransactionViewModel = viewModel()) {
+fun InsuranceScreen(token: String) {
     //val data by viewModel.pivotList.collectAsState()
-    val data by viewModel.insuranceList.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.fetchInsurance()
+    //viewModel: TransactionViewModel = viewModel()
+    //val data by viewModel.insuranceList.collectAsState()
+
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
+
+//    LaunchedEffect(true) {
+//        viewModel.fetchInsurance()
+//    }
+
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+        vm2.fetchInsurance()
     }
+
+    val data : List<InsuranceItem> = vm2.insuranceList
 
     // Tampilkan layar hanya jika data sudah diisi
     if (data.isNotEmpty()) {

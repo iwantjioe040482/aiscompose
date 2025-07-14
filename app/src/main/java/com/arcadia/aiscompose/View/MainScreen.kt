@@ -1,5 +1,6 @@
 package com.arcadia.aiscompose.View
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -20,11 +21,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.arcadia.aiscompose.ViewModel.LoginViewModel
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.saveable.rememberSaveable
+
 //import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(token: String,  onLogout: () -> Unit,viewModel: SidebarViewModel = viewModel()) {
+fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewModel: SidebarViewModel = viewModel()) {
+
+    val token = tokenState.value ?: return // Jangan render apapun jika token null (sudah logout)
+    Log.d("AssetViewModel", "Calling mainscreen with token: $token")
+
     val isDarkTheme = isSystemInDarkTheme()
     //var isLoggedIn by remember { mutableStateOf(true) } // ✅ kontrol tampilan Login/Main
 //    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -103,7 +110,7 @@ fun MainScreen(token: String,  onLogout: () -> Unit,viewModel: SidebarViewModel 
 //                                viewModel.selectMenuItem(item.copy(route = "Login")) // atau kosongkan selectedItem
                             },
                             expandedMap = expandedMap,
-                            token = token // ✅ Tambahkan ini
+                            tokenState = tokenState // ✅ Tambahkan ini
                         )
                     }
                 }
@@ -128,19 +135,19 @@ fun MainScreen(token: String,  onLogout: () -> Unit,viewModel: SidebarViewModel 
                     Text("Memuat data...", style = MaterialTheme.typography.bodyLarge)
                 } else {
                     when (selectedItem?.route) {
-                        "Home" -> HomeScreen()
-                        "WaterInput" -> WaterInputScreen()
-                        "ElectricityInput" -> ElectricityInputScreen()
-                        "Transaction" -> ExpenseTrackerScreen()
-                        "Incomes" -> IncomeTrackerScreen()
-                        "Transfer" -> TransferInputForm()
+                        "Home" -> HomeScreen(token)
+                        "WaterInput" -> WaterInputScreen(token)
+                        "ElectricityInput" -> ElectricityInputScreen(token)
+                        "Transaction" -> ExpenseTrackerScreen(token)
+                        "Incomes" -> IncomeTrackerScreen(token)
+                        "Transfer" -> TransferInputForm(token)
                         "Pivot" -> PivotReportScreen()
-                        "Tax" -> TaxScreen()
-                        "CreditCard" -> CreditCardScreen()
-                        "Insurance" -> InsuranceScreen()
-                        "Expense" -> ExpenseScreen()
-                        "Daily" -> DailyExpenseScreen()
-                        "Assets" -> AssetScreen()
+                        "Tax" -> TaxScreen(token)
+                        "CreditCard" -> CreditCardScreen(token)
+                        "Insurance" -> InsuranceScreen(token)
+                        "Expense" -> ExpenseScreen(token)
+                        "Daily" -> DailyExpenseScreen(token)
+                        "Assets" -> AssetScreen(token)
 //                        "Logout" -> {
 //                            // Bisa clear session, token, dsb di sini
 //                            LoginScreen(isLoggedIn = false)
@@ -162,7 +169,8 @@ fun MenuItemView(
     expandedMap: MutableMap<String, Boolean>,
     onLogout: () -> Unit = {},
     indent: Dp = 0.dp,
-    token: String // ⬅️ Tambah ini
+    //token: String // ⬅️ Tambah ini
+    tokenState: MutableState<String?>
 ) {
     val coroutineScope = rememberCoroutineScope()
     val viewModel: LoginViewModel = viewModel()
@@ -181,13 +189,17 @@ fun MenuItemView(
                         }
                         item.route == "Logout" -> {
                             //val token = viewModel.loginResult.value?.token
+                            val token = tokenState.value
+
                             if (!token.isNullOrBlank()) {
                                 coroutineScope.launch {
                                     viewModel.logout(token)
+                                    tokenState.value = null // 🔥 Token dihapus
                                     onLogout()
                                 }
                             } else {
                                 coroutineScope.launch {
+                                    tokenState.value = null // Tambahan jaga-jaga
                                     onLogout()
                                 }
 //                                println("⚠️ Token tidak ditemukan.")
@@ -216,7 +228,7 @@ fun MenuItemView(
                     onLogout = onLogout,
                     expandedMap = expandedMap,
                     indent = indent + 16.dp,
-                    token = token // ⬅️ Kirim token
+                    tokenState = tokenState // ⬅️ Kirim token
                 )
             }
         }

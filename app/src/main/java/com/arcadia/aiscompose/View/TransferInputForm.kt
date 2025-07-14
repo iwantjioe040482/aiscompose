@@ -12,6 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arcadia.aiscompose.Model.TaxItem
+import com.arcadia.aiscompose.Model.TransferResponse
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import com.arcadia.aiscompose.ViewModel.ElectricityViewModel
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 
@@ -19,9 +22,9 @@ import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransferInputForm() {
-    val viewModel: TransactionViewModel = viewModel()
-    val paymentOptions = listOf("BCA", "CIMB", "Cash","Flazz","Hana","Mandiri","Octo", "Ovo", "ShopeePay")
+fun TransferInputForm(token: String) {
+//    val viewModel: TransactionViewModel = viewModel()
+    val paymentOptions = listOf("BCA","Blue", "CIMB", "Cash","Flazz","GoPay","Hana","Mandiri","Octo", "Ovo", "ShopeePay")
 
     var source by remember { mutableStateOf(paymentOptions.first()) }
     var destination by remember { mutableStateOf(paymentOptions.last()) }
@@ -30,7 +33,16 @@ fun TransferInputForm() {
     var expandedSource by remember { mutableStateOf(false) }
     var expandedDestination by remember { mutableStateOf(false) }
 
-    val transferResult by viewModel.transferResult.collectAsState()
+//    val transferResult by viewModel.transferResult.collectAsState()
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
+
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+    }
+
+    val transferResult : List<TransferResponse?> = vm2.transferResult
+    //val transferResult by viewModel.transferResult
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -111,7 +123,7 @@ fun TransferInputForm() {
         // Submit Button
         Button(
             onClick = {
-                viewModel.submitTransfer(source ,destination , amountText.toDoubleOrNull() ?: 0.0)
+                vm2.submitTransfer(source ,destination , amountText.toDoubleOrNull() ?: 0.0)
 //                isSending = true
 //                result = null
 //                val transferRequest = TransferRequest(from, to, amount.toIntOrNull() ?: 0)
@@ -140,7 +152,7 @@ fun TransferInputForm() {
         Column(modifier = Modifier.padding(16.dp)) {
             // Form submit transfer (dari sebelumnya)
 
-            transferResult?.let { result ->
+            transferResult.firstOrNull()?.let { result ->
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("Message: ${result.message}")
                 Text("From: ${result.data.from}")

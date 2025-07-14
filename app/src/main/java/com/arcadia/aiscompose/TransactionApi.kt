@@ -22,103 +22,102 @@ interface TransactionApi {
     suspend fun getCOAIncome(): List<COAItem>
 
     @GET("tax")
-    suspend fun getTax(): List<TaxItem>
+    suspend fun getTax(@Header("Authorization") token: String): List<TaxItem>
 
     @GET("creditcard")
-    suspend fun getCreditCard(): List<CreditCardItem>
+    suspend fun getCreditCard(@Header("Authorization") token: String): List<CreditCardItem>
 
     @GET("insurance")
-    suspend fun getInsurance(): List<InsuranceItem>
+    suspend fun getInsurance(@Header("Authorization") token: String): List<InsuranceItem>
 
     @GET("pivot")
     suspend fun getPivot(): List<MonthlyPivot>
 
     @GET("expense")
-    suspend fun getExpense(): List<TransactionView>
+    suspend fun getExpense(@Header("Authorization") token: String): List<TransactionView>
 
     @GET("dailyexpense")
-    suspend fun getDailyExpense(): List<DailyReport>
+    suspend fun getDailyExpense(@Header("Authorization") token: String): List<DailyReport>
 
     @GET("monthlyexpense")
-    suspend fun getExpenseReport(): List<Expense>
+    suspend fun getExpenseReport(@Header("Authorization") token: String): List<Expense>
 
     @GET("balance/{coaId}")
-    suspend fun getBalanceByCOA(@Path("coaId") id: String) : List<BalanceResponse>
+    suspend fun getBalanceByCOA(@Header("Authorization") token: String,@Path("coaId") id: String) : List<BalanceResponse>
 
     @POST("allobankincome")
-    suspend fun submitAlloBankIncome(@Body expense: Transaction)
+    suspend fun submitAlloBankIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("allobankexpense")
-    suspend fun submitAlloBankExpense(@Body expense: Transaction)
+    suspend fun submitAlloBankExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("bcaexpense")
-    suspend fun submitBCAExpense(@Body expense: Transaction)
+    suspend fun submitBCAExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("bcaincome")
-    suspend fun submitBCAIncome(@Body expense: Transaction)
+    suspend fun submitBCAIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("/transfer")
-    suspend fun postTransfer(@Body request: TransferRequest): TransferResponse
+    suspend fun postTransfer(@Header("Authorization") token: String,@Body request: TransferRequest):List<TransferResponse?>
 
     @POST("cashexpense")
-    suspend fun submitCashExpense(@Body expense: Transaction)
+    suspend fun submitCashExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("cashincome")
-    suspend fun submitCashIncome(@Body expense: Transaction)
+    suspend fun submitCashIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("cimbincome")
-    suspend fun submitCIMBIncome(@Body expense: Transaction)
+    suspend fun submitCIMBIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("cimbexpense")
-    suspend fun submitCIMBExpense(@Body expense: Transaction)
+    suspend fun submitCIMBExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("danaincome")
-    suspend fun submitDanaIncome(@Body expense: Transaction)
+    suspend fun submitDanaIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("danaexpense")
-    suspend fun submitDanaExpense(@Body expense: Transaction)
+    suspend fun submitDanaExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("flazzexpense")
-    suspend fun submitFlazzExpense(@Body expense: Transaction)
+    suspend fun submitFlazzExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("gopayexpense")
-    suspend fun submitGoPayExpense(@Body expense: Transaction)
+    suspend fun submitGoPayExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("gopayincome")
-    suspend fun submitGoPayIncome(@Body expense: Transaction)
+    suspend fun submitGoPayIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("hanaexpense")
-    suspend fun submitHanaExpense(@Body expense: Transaction)
+    suspend fun submitHanaExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("hanaincome")
-    suspend fun submitHanaIncome(@Body expense: Transaction)
+    suspend fun submitHanaIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("mandiriincome")
-    suspend fun submitMandiriIncome(@Body expense: Transaction)
+    suspend fun submitMandiriIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("mandiriexpense")
-    suspend fun submitMandiriExpense(@Body expense: Transaction)
+    suspend fun submitMandiriExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("octoincome")
-    suspend fun submitOctoIncome(@Body expense: Transaction)
+    suspend fun submitOctoIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("octoexpense")
-    suspend fun submitOctoExpense(@Body expense: Transaction)
+    suspend fun submitOctoExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("ovoincome")
-    suspend fun submitOvoIncome(@Body expense: Transaction)
+    suspend fun submitOvoIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("ovoexpense")
-    suspend fun submitOvoExpense(@Body expense: Transaction)
+    suspend fun submitOvoExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("permataexpense")
-    suspend fun submitPermataExpense(@Body expense: Transaction)
+    suspend fun submitPermataExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("permataincome")
-    suspend fun submitPermataIncome(@Body expense: Transaction)
+    suspend fun submitPermataIncome(@Header("Authorization") token: String,@Body expense: Transaction)
 
     @POST("shopeepayexpense")
-    suspend fun submitShopeeExpense(@Body expense: Transaction)
-
+    suspend fun submitShopeeExpense(@Header("Authorization") token: String,@Body expense: Transaction)
 
 }

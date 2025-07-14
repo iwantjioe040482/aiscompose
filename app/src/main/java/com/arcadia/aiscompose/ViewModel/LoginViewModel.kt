@@ -1,5 +1,6 @@
 package com.arcadia.aiscompose.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arcadia.aiscompose.AuthApi
@@ -42,6 +43,8 @@ class LoginViewModel : ViewModel() {
     {
         viewModelScope.launch {
             try {
+                Log.d("AssetViewModel", "Calling logout with token: $token")
+
                 val response = api.logout(LogoutRequest(token))
 //                if (response.isSuccessful) {
 //                    _loginResult.value = response.body() // ✅ ubah _loginResult, bukan loginResult
@@ -57,9 +60,11 @@ class LoginViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
+                Log.d("AssetViewModel", "Calling login with token: $token")
                 val response = api.login(LoginRequest(username, password))
                 if (response.isSuccessful) {
                     _loginResult.value = response.body() // ✅ ubah _loginResult, bukan loginResult
+                    Log.d("AssetViewModel", "Calling login get  token: ${_loginResult.value?.token}")
                 } else {
                     errorMessage.value = "Login gagal: ${response.code()}"
                 }

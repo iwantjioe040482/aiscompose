@@ -13,20 +13,34 @@ import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 import java.time.LocalDate
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 
 
 @Composable
-fun IncomeTrackerScreen() {
+fun IncomeTrackerScreen(token: String) {
     var selectedCOAId by remember { mutableStateOf<Int?>(null) }
     var coaExpanded by remember { mutableStateOf(false) }
     var description by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     val vm: COAIncomeViewModel = viewModel()
-    val vm2: TransactionViewModel = viewModel()
+ // val vm2: TransactionViewModel = viewModel()
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
+
     val data by vm.coaList.collectAsState()
     var transaction by remember { mutableStateOf("Cash") }
     var transactionExpanded by remember { mutableStateOf(false) }
-    val balance by vm2.balance.collectAsState()
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+
+    }
+
+    LaunchedEffect(transaction) {
+        vm2.fetchBalanceByCOA(transaction)
+    }
+
+    //val balance by vm2.balance.collectAsState()
+    val balance : List<Double> = vm2.balance
 
     Column(
         modifier = Modifier
@@ -93,7 +107,7 @@ fun IncomeTrackerScreen() {
                     onDismissRequest = { transactionExpanded = false }
                 ) {
                     listOf(
-                        "Allo Bank", "BCA", "Cash", "CIMB", "Dana", "Flazz",
+                        "Allo Bank", "BCA","Blu", "Cash", "CIMB", "Dana", "Flazz",
                         "GoPay", "Hana","Mandiri", "Octo", "Ovo", "Permata", "ShopeePay"
                     ).forEach {
                         DropdownMenuItem(
@@ -101,7 +115,6 @@ fun IncomeTrackerScreen() {
                             onClick = {
                                 transaction = it
                                 transactionExpanded = false
-                                vm2.fetchBalanceByCOA(it)
                             }
                         )
                     }
@@ -111,12 +124,19 @@ fun IncomeTrackerScreen() {
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Balance
+        val balanceValue = balance.firstOrNull() ?: 0.0
+
         Text(
-            text = "Balance: Rp ${"%,.2f".format(balance)}",
+            text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
             color = Color.Green,
             style = MaterialTheme.typography.headlineMedium
         )
+//        // Balance
+//        Text(
+//            text = "Balance: Rp ${"%,.2f".format(balance)}",
+//            color = Color.Green,
+//            style = MaterialTheme.typography.headlineMedium
+//        )
 
         Spacer(modifier = Modifier.height(4.dp))
 

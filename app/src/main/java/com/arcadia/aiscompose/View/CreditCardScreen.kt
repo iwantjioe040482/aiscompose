@@ -17,13 +17,43 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.padding
 import com.arcadia.aiscompose.Model.CreditCardItem
+import com.arcadia.aiscompose.Model.InsuranceItem
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
+import kotlinx.coroutines.delay
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+
 
 @Composable
-fun CreditCardScreen(viewModel: TransactionViewModel = viewModel()) {
-    val data by viewModel.creditcardList.collectAsState()
+fun CreditCardScreen(token: String) {
+    var showProgress by remember { mutableStateOf(true) }
+    var showNoDataDialog by remember { mutableStateOf(false) }
+//    viewModel: TransactionViewModel = viewModel()
+//    val data by viewModel.creditcardList.collectAsState()
+//
+//    LaunchedEffect(true) {
+//        viewModel.fetchCreditCard()
+//    }
 
-    LaunchedEffect(true) {
-        viewModel.fetchCreditCard()
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
+
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+        vm2.fetchCreditCard()
+    }
+
+
+    val data : List<CreditCardItem> = vm2.creditcardList
+
+    // Jalankan delay 3 detik jika data kosong
+    LaunchedEffect(key1 = data) {
+        if (data.isEmpty()) {
+            delay(3000L) // 3 detik
+            showProgress = false
+            showNoDataDialog = true
+        }
     }
 
     // Tampilkan layar hanya jika data sudah diisi
@@ -46,10 +76,28 @@ fun CreditCardScreen(viewModel: TransactionViewModel = viewModel()) {
                 }
             }
         }
-    } else {
+    } else if (showProgress) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
+    }
+
+    // Dialog pop-up jika tidak ada data setelah 3 detik
+    if (showNoDataDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoDataDialog = false
+                showProgress = false // 👈 tambahkan ini
+                 },
+            confirmButton = {
+                TextButton(onClick = { showNoDataDialog = false
+                    showProgress = false // 👈 tambahkan ini
+                     }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Tidak Ada Data") },
+            text = { Text("Data tidak ditemukan atau masih kosong.") }
+        )
     }
 }
 

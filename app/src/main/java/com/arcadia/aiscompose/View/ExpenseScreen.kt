@@ -16,18 +16,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.padding
+import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 
 @Composable
-fun ExpenseScreen(viewModel: TransactionViewModel = viewModel()) {
+fun ExpenseScreen(token: String) {
 
-    val data by viewModel.expenseList.collectAsState()
+//    viewModel: TransactionViewModel = viewModel()
+//    val data by viewModel.expenseList.collectAsState()
+//
+//    //val filteredData = data.filter { it.coa_name == "Bebam Bensin" }
+//
+//    LaunchedEffect(true) {
+//        viewModel.fetchExpenseReport()
+//    }
 
-    //val filteredData = data.filter { it.coa_name == "Bebam Bensin" }
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
 
-    LaunchedEffect(true) {
-        viewModel.fetchExpenseReport()
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+        vm2.fetchExpenseReport()
     }
+
+    val data : List<Expense> = vm2.expenseList
 
 
     // Tampilkan layar hanya jika data sudah diisi

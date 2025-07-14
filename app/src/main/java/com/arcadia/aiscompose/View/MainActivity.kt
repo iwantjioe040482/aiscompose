@@ -9,6 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.arcadia.aiscompose.ui.theme.ArcadiaTheme
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.MutableState
 
 class MainActivity  : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,21 +40,23 @@ class MainActivity  : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
-    var token by rememberSaveable { mutableStateOf<String?>(null) }
+    //var token by rememberSaveable { mutableStateOf<String?>(null) }
+    //var token = remember { mutableStateOf<String?>(null) }
+    val token = rememberSaveable { mutableStateOf<String?>(null) }
     //var isLoggedIn by remember { mutableStateOf(false) }
 //    val navController = rememberNavController()
     if (!isLoggedIn) {
         LoginScreen(
             onLoginSuccess = {newToken ->
-                token = newToken
+                token.value = newToken
                 isLoggedIn = true // ✅ update login status
             }
         )
     } else {
         MainScreen(
-            token = token ?: "", // kirim token yang tersimpan
+            tokenState = token, // kirim token yang tersimpan
             onLogout = {
-                token = null     // hapus token setelah logout
+                token.value = null     // hapus token setelah logout
                 isLoggedIn = false
             }
 //            onLogout = {

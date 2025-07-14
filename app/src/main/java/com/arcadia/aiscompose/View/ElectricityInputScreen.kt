@@ -16,16 +16,37 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import com.arcadia.aiscompose.ViewModel.ElectricityViewModel
 import com.arcadia.aiscompose.Model.Electricity
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import com.arcadia.aiscompose.Model.ElectricityView
+import com.arcadia.aiscompose.Model.WaterView
+import com.arcadia.aiscompose.Repository.ElectricityViewModelFactory
+import com.arcadia.aiscompose.Repository.WaterViewModelFactory
+import com.arcadia.aiscompose.ViewModel.WaterViewModel
 
 @Composable
-fun ElectricityInputScreen() {
-    val viewModel: ElectricityViewModel = viewModel()
-    val electricityList by viewModel.electricityList.collectAsState()
-    val estelectricbillList by viewModel.balance.collectAsState()
+fun ElectricityInputScreen(token: String) {
+    val factory = remember { ElectricityViewModelFactory(token) }
+    val viewModel: ElectricityViewModel = viewModel(factory = factory)
+
+    LaunchedEffect(token) {
+        viewModel.setToken(token)
+        viewModel.fetchElectricity()
+        viewModel.fetchElectricityBill()
+    }
+
+//    val viewModel: ElectricityViewModel = viewModel()
+    //val electricityList by viewModel.electricityList.collectAsState()
+    val electricityList : List<ElectricityView> = viewModel.electricityList
+    //val estelectricbillList by viewModel.balance.collectAsState()
+    val estelectricbillList: List<Double> = viewModel.balance
 
     val today = remember {
         SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -71,8 +92,12 @@ fun ElectricityInputScreen() {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Est. Billing:", style = MaterialTheme.typography.bodyLarge)
+//                        Text(
+//                            "Rp ${"%,.2f".format(estelectricbillList)}",
+//                            style = MaterialTheme.typography.titleMedium
+//                        )
                         Text(
-                            "Rp ${"%,.2f".format(estelectricbillList)}",
+                            "Rp ${"%,.2f".format(estelectricbillList.firstOrNull() ?: 0.0)}",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
@@ -143,10 +168,15 @@ fun ElectricityInputScreen() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text("Est. Billing:", style = MaterialTheme.typography.bodyLarge)
+//                    Text(
+//                        "Rp ${"%,.2f".format(estelectricbillList)}",
+//                        style = MaterialTheme.typography.titleMedium
+//                    )
                     Text(
-                        "Rp ${"%,.2f".format(estelectricbillList)}",
+                        "Rp ${"%,.2f".format(estelectricbillList.firstOrNull() ?: 0.0)}",
                         style = MaterialTheme.typography.titleMedium
                     )
+
                 }
 
                 OutlinedTextField(

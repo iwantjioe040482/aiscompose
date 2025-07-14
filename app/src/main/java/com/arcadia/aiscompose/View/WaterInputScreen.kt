@@ -15,16 +15,34 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arcadia.aiscompose.Model.EstWaterBill
 import com.arcadia.aiscompose.ViewModel.WaterViewModel
 import com.arcadia.aiscompose.Model.Water
+import com.arcadia.aiscompose.Model.WaterView
+import com.arcadia.aiscompose.Repository.WaterViewModelFactory
+
 
 @Composable
-fun WaterInputScreen() {
-    val viewModel: WaterViewModel = viewModel()
-    val waterList by viewModel.waterList.collectAsState()
-    val estwaterbillList by viewModel.balance.collectAsState()
+fun WaterInputScreen(token: String) {
+
+    val factory = remember { WaterViewModelFactory(token) }
+    val viewModel: WaterViewModel = viewModel(factory = factory)
+
+    LaunchedEffect(token) {
+        viewModel.setToken(token)
+        viewModel.fetchWater()
+        viewModel.fetchWaterBill()
+    }
+
+
+    //val viewModel: WaterViewModel = viewModel()
+    //val waterList by viewModel.waterList.collectAsState()
+    val waterList : List<WaterView> = viewModel.waterList
+    //val estwaterbillList by viewModel.balance.collectAsState()
+    val estwaterbillList: List<Double> = viewModel.balance
 
     val today = remember {
         SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -74,8 +92,12 @@ fun WaterInputScreen() {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Est. Billing:", style = MaterialTheme.typography.bodyLarge)
+//                        Text(
+//                            "Rp ${"%,.2f".format(estwaterbillList)}",
+//                            style = MaterialTheme.typography.titleMedium
+//                        )
                         Text(
-                            "Rp ${"%,.2f".format(estwaterbillList)}",
+                            "Rp ${"%,.2f".format(estwaterbillList.firstOrNull() ?: 0.0)}",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
@@ -144,7 +166,11 @@ fun WaterInputScreen() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text("Est. Billing:", style = MaterialTheme.typography.bodyLarge)
-                    Text("Rp ${"%,.2f".format(estwaterbillList)}", style = MaterialTheme.typography.titleMedium)
+                    //Text("Rp ${"%,.2f".format(estwaterbillList)}", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Rp ${"%,.2f".format(estwaterbillList.firstOrNull() ?: 0.0)}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
 
                 OutlinedTextField(

@@ -14,11 +14,20 @@ import com.arcadia.aiscompose.ViewModel.COAViewModel
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 import java.time.LocalDate
 import androidx.compose.runtime.collectAsState
+import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.TransactionView
+import com.arcadia.aiscompose.Model.WaterView
+import com.arcadia.aiscompose.ViewModel.WaterViewModel
+import com.arcadia.aiscompose.Repository.TransactionRepository
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
+import com.arcadia.aiscompose.Repository.WaterViewModelFactory
 
 @Composable
-fun ExpenseTrackerScreen() {
+fun ExpenseTrackerScreen(token: String) {
     val vm: COAViewModel = viewModel()
-    val vm2: TransactionViewModel = viewModel()
+    //val vm2: TransactionViewModel = viewModel()
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
 
     var transaction by remember { mutableStateOf("Cash") }
     var transactionExpanded by remember { mutableStateOf(false) }
@@ -32,10 +41,21 @@ fun ExpenseTrackerScreen() {
     var priority by remember { mutableStateOf("Keinginan") }
     var priorityExpanded by remember { mutableStateOf(false) }
 
-    val balance by vm2.balance.collectAsState()
-    val transactionList by vm2.transactionList.collectAsState()
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+        vm2.fetchExpense()
+    }
 
-    vm2.fetchBalanceByCOA(transaction)
+    LaunchedEffect(transaction) {
+        vm2.fetchBalanceByCOA(transaction)
+    }
+
+
+    val balance : List<Double> = vm2.balance
+    //val balance by vm2.balance.collectAsState()
+    //val transactionList by vm2.transactionList.collectAsState()
+    val transactionList : List<TransactionView> = vm2.transactionList
+
 
     Column(
         modifier = Modifier
@@ -75,13 +95,12 @@ fun ExpenseTrackerScreen() {
                     expanded = transactionExpanded,
                     onDismissRequest = { transactionExpanded = false }
                 ) {
-                    listOf("Allo Bank", "BCA", "Cash","CIMB","Dana", "Flazz", "GoPay","Hana","Mandiri","Octo", "Ovo","Permata", "ShopeePay").forEach {
+                    listOf("Allo Bank","Blu", "BCA", "Cash","CIMB","Dana", "Flazz", "GoPay","Hana","Mandiri","Octo", "Ovo","Permata", "ShopeePay").forEach {
                         DropdownMenuItem(
                             text = { Text(it) },
                             onClick = {
                                 transaction = it
                                 transactionExpanded = false
-                                vm2.fetchBalanceByCOA(it)
                             }
                         )
                     }
@@ -91,12 +110,19 @@ fun ExpenseTrackerScreen() {
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Balance
+        val balanceValue = balance.firstOrNull() ?: 0.0
+
         Text(
-            text = "Balance: Rp ${"%,.2f".format(balance)}",
+            text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
             color = Color.Green,
             style = MaterialTheme.typography.headlineMedium
         )
+//        // Balance
+//        Text(
+//            text = "Balance: Rp ${"%,.2f".format(balance)}",
+//            color = Color.Green,
+//            style = MaterialTheme.typography.headlineMedium
+//        )
 
         Spacer(modifier = Modifier.height(4.dp))
 
