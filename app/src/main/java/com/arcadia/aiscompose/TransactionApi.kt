@@ -16,10 +16,10 @@ import com.arcadia.aiscompose.Model.TransferResponse
 
 interface TransactionApi {
     @GET("COAExpense")
-    suspend fun getCOAList(): List<COAItem>
+    suspend fun getCOAList(@Header("Authorization") token: String): List<COAItem>
 
     @GET("COAIncome")
-    suspend fun getCOAIncome(): List<COAItem>
+    suspend fun getCOAIncome(@Header("Authorization") token: String): List<COAItem>
 
     @GET("tax")
     suspend fun getTax(@Header("Authorization") token: String): List<TaxItem>
@@ -31,7 +31,8 @@ interface TransactionApi {
     suspend fun getInsurance(@Header("Authorization") token: String): List<InsuranceItem>
 
     @GET("pivot")
-    suspend fun getPivot(): List<MonthlyPivot>
+    suspend fun getPivot(@Header("Authorization") token: String): List<MonthlyPivot>
+    //suspend fun getPivot(@Header("Authorization") token: String): List<Map<String, String>>
 
     @GET("expense")
     suspend fun getExpense(@Header("Authorization") token: String): List<TransactionView>

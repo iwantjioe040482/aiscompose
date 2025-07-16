@@ -16,7 +16,7 @@ fun TransactionItem(e: TransactionView) {
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(6.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -30,8 +30,8 @@ fun TransactionItem(e: TransactionView) {
                 Text(
                     text =  e.coa_name,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Justify
+                    modifier = Modifier.weight(2f),
+                    textAlign = TextAlign.Start
                 )
                 Text(
                     text = "Rp ${"%,.0f".format(e.total)}",

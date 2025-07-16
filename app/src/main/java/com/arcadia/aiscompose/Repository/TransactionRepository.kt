@@ -3,6 +3,7 @@ package com.arcadia.aiscompose.Repository
 import com.arcadia.aiscompose.AssetApi
 import com.arcadia.aiscompose.Model.Assets
 import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.COAItem
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
@@ -55,6 +56,14 @@ object TransactionRepository {
 
     suspend fun getDailyExpense(token: String): List<DailyReport> {
         return api.getDailyExpense("Bearer $token")
+    }
+
+    suspend fun getCOAList(token: String): List<COAItem> {
+        return api.getCOAList("Bearer $token")
+    }
+
+    suspend fun getCOAIncome(token: String): List<COAItem> {
+        return api.getCOAIncome("Bearer $token")
     }
 
     suspend fun postTransfer(token: String, request: TransferRequest):List<TransferResponse?> {

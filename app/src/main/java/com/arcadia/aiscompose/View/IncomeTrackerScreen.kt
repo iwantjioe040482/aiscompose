@@ -13,7 +13,10 @@ import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 import java.time.LocalDate
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import com.arcadia.aiscompose.Repository.COAIncomeViewModelFactory
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
+import com.arcadia.aiscompose.ViewModel.COAViewModel
+import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
@@ -22,17 +25,24 @@ fun IncomeTrackerScreen(token: String) {
     var coaExpanded by remember { mutableStateOf(false) }
     var description by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
-    val vm: COAIncomeViewModel = viewModel()
+    //val vm: COAIncomeViewModel = viewModel()
  // val vm2: TransactionViewModel = viewModel()
+    val factory2 = remember { COAIncomeViewModelFactory(token) }
+    val vm: COAIncomeViewModel = viewModel(factory = factory2)
+
+
     val factory = remember { TransactionViewModelFactory(token) }
     val vm2 : TransactionViewModel = viewModel(factory = factory)
 
-    val data by vm.coaList.collectAsState()
+//    val data by vm.coaList.collectAsState()
+
     var transaction by remember { mutableStateOf("Cash") }
     var transactionExpanded by remember { mutableStateOf(false) }
+
     LaunchedEffect(token) {
         vm2.setToken(token)
-
+        vm.setToken(token)
+        vm.fetchCOAIncomes()
     }
 
     LaunchedEffect(transaction) {
@@ -41,17 +51,22 @@ fun IncomeTrackerScreen(token: String) {
 
     //val balance by vm2.balance.collectAsState()
     val balance : List<Double> = vm2.balance
+    val data = vm.coaList
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(4.dp)
     ) {
+        Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = "Expense Tracker",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 4.dp)
+            text = "Income Tracker",
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth() // <- penting agar bisa center
+                .padding(bottom = 2.dp)
         )
 
         // COA Dropdown
@@ -64,7 +79,7 @@ fun IncomeTrackerScreen(token: String) {
             }
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Description
         OutlinedTextField(
@@ -74,7 +89,7 @@ fun IncomeTrackerScreen(token: String) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Amount
         OutlinedTextField(
@@ -84,7 +99,7 @@ fun IncomeTrackerScreen(token: String) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // ⬇️ Transaction in 1 Row
         Row(
@@ -122,7 +137,7 @@ fun IncomeTrackerScreen(token: String) {
             }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         val balanceValue = balance.firstOrNull() ?: 0.0
 
@@ -138,7 +153,7 @@ fun IncomeTrackerScreen(token: String) {
 //            style = MaterialTheme.typography.headlineMedium
 //        )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Submit Button
         Button(
@@ -170,6 +185,6 @@ fun IncomeTrackerScreen(token: String) {
             Text("Submit")
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
     }
 }

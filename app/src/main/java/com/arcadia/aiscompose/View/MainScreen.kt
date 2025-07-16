@@ -141,7 +141,7 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                         "Transaction" -> ExpenseTrackerScreen(token)
                         "Incomes" -> IncomeTrackerScreen(token)
                         "Transfer" -> TransferInputForm(token)
-                        "Pivot" -> PivotReportScreen()
+                        "Pivot" -> PivotReportScreen(token)
                         "Tax" -> TaxScreen(token)
                         "CreditCard" -> CreditCardScreen(token)
                         "Insurance" -> InsuranceScreen(token)

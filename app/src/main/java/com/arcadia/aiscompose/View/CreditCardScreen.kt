@@ -49,8 +49,8 @@ fun CreditCardScreen(token: String) {
 
     // Jalankan delay 3 detik jika data kosong
     LaunchedEffect(key1 = data) {
+        delay(3000L) // 3 detik
         if (data.isEmpty()) {
-            delay(3000L) // 3 detik
             showProgress = false
             showNoDataDialog = true
         }

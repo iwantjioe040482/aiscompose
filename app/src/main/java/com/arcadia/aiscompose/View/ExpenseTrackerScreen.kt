@@ -17,17 +17,22 @@ import androidx.compose.runtime.collectAsState
 import com.arcadia.aiscompose.Model.BalanceResponse
 import com.arcadia.aiscompose.Model.TransactionView
 import com.arcadia.aiscompose.Model.WaterView
+import com.arcadia.aiscompose.Repository.COAViewModelFactory
 import com.arcadia.aiscompose.ViewModel.WaterViewModel
 import com.arcadia.aiscompose.Repository.TransactionRepository
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import com.arcadia.aiscompose.Repository.WaterViewModelFactory
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun ExpenseTrackerScreen(token: String) {
-    val vm: COAViewModel = viewModel()
+    //val vm: COAViewModel = viewModel()
     //val vm2: TransactionViewModel = viewModel()
+    val factory2 = remember { COAViewModelFactory(token) }
     val factory = remember { TransactionViewModelFactory(token) }
+
     val vm2 : TransactionViewModel = viewModel(factory = factory)
+    val vm: COAViewModel = viewModel(factory = factory2)
 
     var transaction by remember { mutableStateOf("Cash") }
     var transactionExpanded by remember { mutableStateOf(false) }
@@ -43,7 +48,9 @@ fun ExpenseTrackerScreen(token: String) {
 
     LaunchedEffect(token) {
         vm2.setToken(token)
+        vm.setToken(token)
         vm2.fetchExpense()
+        vm.fetchCOAExpense()
     }
 
     LaunchedEffect(transaction) {
@@ -62,18 +69,22 @@ fun ExpenseTrackerScreen(token: String) {
             .fillMaxSize()
             .padding(8.dp)
     ) {
+        Spacer(modifier = Modifier.height(48.dp))
 
         Text(
             text = "Expense Tracker",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 4.dp)
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth() // <- penting agar bisa center
+                .padding(bottom = 2.dp)
         )
 
         // Transaction Dropdown - Left-Right (1 row, 2 columns)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(vertical = 2.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -108,7 +119,7 @@ fun ExpenseTrackerScreen(token: String) {
             }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         val balanceValue = balance.firstOrNull() ?: 0.0
 
@@ -124,16 +135,17 @@ fun ExpenseTrackerScreen(token: String) {
 //            style = MaterialTheme.typography.headlineMedium
 //        )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // COA Dropdown
         //Text("COA")
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth())
+        {
             //OutlinedButton(onClick = { coaExpanded = true }, modifier = Modifier.fillMaxWidth()) {
             //    Text(selectedCOAId?.toString() ?: "Pilih COA")
             //}
             COADropdownMenu(
-                coaList = vm.coaList.value,
+                coaList = vm.coaList,
                 selectedId = selectedCOAId,
                 onSelect = {
                     selectedCOAId = it
@@ -142,17 +154,18 @@ fun ExpenseTrackerScreen(token: String) {
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Description
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
             label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Amount
         OutlinedTextField(
@@ -162,13 +175,13 @@ fun ExpenseTrackerScreen(token: String) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Priority Dropdown - Left-Right (1 row, 2 columns)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(vertical = 2.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -203,7 +216,7 @@ fun ExpenseTrackerScreen(token: String) {
             }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Submit Button
         Button(
@@ -238,11 +251,15 @@ fun ExpenseTrackerScreen(token: String) {
             Text("Submit")
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Expense List
-        Text("Daily Expense", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
+        Text("Daily Expense", style = MaterialTheme.typography.titleMedium,textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth() // <- penting agar bisa center
+                .padding(bottom = 2.dp)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
 
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(transactionList.size) { index ->
