@@ -32,9 +32,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arcadia.aiscompose.ViewModel.LoginViewModel
 
 @Composable
-fun RegisterScreen(onRegisterSuccess: () -> Unit,onBackToLogin: () -> Unit) {
+fun RegisterScreen(onRegisterSuccess: () -> Unit) {
+    val viewModel: LoginViewModel = viewModel()
     val isDarkTheme = isSystemInDarkTheme()
     var name  by rememberSaveable { mutableStateOf("") }
     var email  by rememberSaveable { mutableStateOf("") }
@@ -170,6 +173,7 @@ fun RegisterScreen(onRegisterSuccess: () -> Unit,onBackToLogin: () -> Unit) {
                             } else {
                                 // Simulasi success
                                 onRegisterSuccess()
+                                viewModel.register(email,password,name)
                             }
                         },
                         modifier = Modifier
@@ -180,7 +184,7 @@ fun RegisterScreen(onRegisterSuccess: () -> Unit,onBackToLogin: () -> Unit) {
                     }
 
                     TextButton(
-                        onClick = onBackToLogin,
+                        onClick = onRegisterSuccess,
                         modifier = Modifier.align(Alignment.Start)
                     ) {
                         Text("Sudah punya akun? Login")

@@ -41,6 +41,14 @@ class SidebarViewModel : ViewModel() {
                     ),
 
                     MenuItem(route = "Assets", label = "Assets", id = "Assets"),
+                    //MenuItem(route = "Payment", label = "Payment", id = "Payment"),
+                    MenuItem(
+                        label = "Setting",
+                        id = "Setting",
+                        children = listOf(
+                            MenuItem(route = "COAAccess", label = "COA Access", id = "COAAccess")
+                        )
+                    ),
                     // Logout item
                     MenuItem(route = "Logout", label = "Logout", id = "Logout")
                 )

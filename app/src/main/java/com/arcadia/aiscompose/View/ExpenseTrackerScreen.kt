@@ -23,6 +23,12 @@ import com.arcadia.aiscompose.Repository.TransactionRepository
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import com.arcadia.aiscompose.Repository.WaterViewModelFactory
 import androidx.compose.ui.text.style.TextAlign
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Alignment
+import java.util.TimeZone
 
 @Composable
 fun ExpenseTrackerScreen(token: String) {
@@ -58,7 +64,7 @@ fun ExpenseTrackerScreen(token: String) {
     }
 
 
-    val balance : List<Double> = vm2.balance
+    val balance : List<BalanceResponse> = vm2.balance
     //val balance by vm2.balance.collectAsState()
     //val transactionList by vm2.transactionList.collectAsState()
     val transactionList : List<TransactionView> = vm2.transactionList
@@ -69,7 +75,7 @@ fun ExpenseTrackerScreen(token: String) {
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(
             text = "Expense Tracker",
@@ -77,14 +83,14 @@ fun ExpenseTrackerScreen(token: String) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth() // <- penting agar bisa center
-                .padding(bottom = 2.dp)
+                .padding(bottom = 1.dp)
         )
 
         // Transaction Dropdown - Left-Right (1 row, 2 columns)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 2.dp),
+                .padding(vertical = 1.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -99,34 +105,92 @@ fun ExpenseTrackerScreen(token: String) {
                     .weight(2f)
                     .alignByBaseline()
             ) {
-                TextButton(onClick = { transactionExpanded = true }) {
-                    Text(transaction)
-                }
-                DropdownMenu(
-                    expanded = transactionExpanded,
-                    onDismissRequest = { transactionExpanded = false }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    listOf("Allo Bank","Blu", "BCA", "Cash","CIMB","Dana", "Flazz", "GoPay","Hana","Mandiri","Octo", "Ovo","Permata", "ShopeePay").forEach {
-                        DropdownMenuItem(
-                            text = { Text(it) },
-                            onClick = {
-                                transaction = it
-                                transactionExpanded = false
-                            }
-                        )
+                    TextButton(onClick = { transactionExpanded = true }) {
+                        Text(transaction)
                     }
+                    DropdownMenu(
+                        expanded = transactionExpanded,
+                        onDismissRequest = { transactionExpanded = false }
+                    ) {
+                        listOf(
+                            "Allo Bank",
+                            "Blu",
+                            "BCA",
+                            "Cash",
+                            "CIMB",
+                            "Dana",
+                            "Flazz",
+                            "GoPay",
+                            "Hana",
+                            "HSBC",
+                            "Mandiri",
+                            "Octo",
+                            "Ovo",
+                            "Permata",
+                            "ShopeePay"
+                        ).forEach {
+                            DropdownMenuItem(
+                                text = { Text(it) },
+                                onClick = {
+                                    transaction = it
+                                    transactionExpanded = false
+                                }
+                            )
+                        }
+                    }
+
+//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//
+//                    val defaultDate =
+//                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse("1900-01-01")!!
+//
+//                    val lastupdate = balance.firstOrNull()?.Updated_at ?: defaultDate
+//                    val lastupdated = dateFormat.format(lastupdate)
+
+//                    val lastupdated by remember(balance) {
+//                        derivedStateOf {
+//                            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//                            val defaultDate = dateFormat.parse("1900-01-01")!!
+//                            val lastupdate = balance.firstOrNull()?.Updated_at ?: defaultDate
+//                            dateFormat.format(lastupdate)
+//                        }
+//                    }
+
+//                    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+//                    val defaultDate = remember { dateFormat.parse("1900-01-01")!! }
+
+                    // Format ISO 8601 seperti "2025-07-21T12:15:56.000Z"
+//                    val dateFormatIso = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+//                        timeZone = TimeZone.getTimeZone("UTC")
+//                    }
+
+//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+                    val updatedDate: String = balance.firstOrNull()?.updated_at ?: "1900-01-01"!!
+
+                    Text(
+                        text = "Last: $updatedDate",
+                        //color = Color.Green,
+                        fontSize = 13.sp
+                    )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
-        val balanceValue = balance.firstOrNull() ?: 0.0
+        val balanceValue = balance.firstOrNull()?.Balance ?: 0.0
 
         Text(
             text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
             color = Color.Green,
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineSmall
         )
 //        // Balance
 //        Text(
@@ -135,7 +199,7 @@ fun ExpenseTrackerScreen(token: String) {
 //            style = MaterialTheme.typography.headlineMedium
 //        )
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         // COA Dropdown
         //Text("COA")
@@ -154,7 +218,7 @@ fun ExpenseTrackerScreen(token: String) {
             )
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         // Description
         OutlinedTextField(
@@ -165,7 +229,7 @@ fun ExpenseTrackerScreen(token: String) {
                 .fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         // Amount
         OutlinedTextField(
@@ -175,13 +239,13 @@ fun ExpenseTrackerScreen(token: String) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         // Priority Dropdown - Left-Right (1 row, 2 columns)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 2.dp),
+                .padding(vertical = 1.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -216,7 +280,7 @@ fun ExpenseTrackerScreen(token: String) {
             }
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         // Submit Button
         Button(
@@ -251,15 +315,15 @@ fun ExpenseTrackerScreen(token: String) {
             Text("Submit")
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         // Expense List
         Text("Daily Expense", style = MaterialTheme.typography.titleMedium,textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth() // <- penting agar bisa center
-                .padding(bottom = 2.dp)
+                .padding(bottom = 1.dp)
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(3.dp))
 
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(transactionList.size) { index ->

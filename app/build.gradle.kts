@@ -62,6 +62,9 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.zxing:core:3.5.3")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.0") // Versi sesuaikan
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -1,9 +1,12 @@
 package com.arcadia.aiscompose.Repository
 
+import android.util.Log
 import com.arcadia.aiscompose.AssetApi
 import com.arcadia.aiscompose.Model.Assets
 import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.COAAccess
 import com.arcadia.aiscompose.Model.COAItem
+import com.arcadia.aiscompose.Model.CoaUserPostDTO
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
@@ -34,8 +37,9 @@ object TransactionRepository {
         api = retrofit.create(TransactionApi::class.java)
     }
 
-    suspend fun getBalance(token: String,coaId: String): List<Double> {
-        return api.getBalanceByCOA("Bearer $token",coaId,).map { it.Balance }
+    suspend fun getBalance(token: String,coaId: String): List<BalanceResponse> {
+        return api.getBalanceByCOA("Bearer $token",coaId,)
+//        return api.getBalanceByCOA("Bearer $token",coaId,).map { it.Balance }
     }
 
     suspend fun getExpense(token: String): List<TransactionView> {
@@ -169,5 +173,13 @@ object TransactionRepository {
     suspend fun submitPermataIncome(token: String,expense: Transaction) {
         return api.submitPermataIncome("Bearer $token",expense)
     }
-
+    suspend fun getCOAAceess(token: String): List<COAAccess> {
+        Log.d("COAAcces", "token in rep: ${token}")
+        return api.getCOAAccess("Bearer $token")
+    }
+    suspend fun saveCOAAccess(token: String,selectedItems: List<CoaUserPostDTO>) {
+        // Ganti dengan panggilan ke API atau Room Database Anda
+        // Misal pakai Retrofit:
+        api.submitCOAUser("Bearer $token",selectedItems)
+    }
 }

@@ -39,32 +39,68 @@ class MainActivity  : ComponentActivity() {
 
 @Composable
 fun AppNavigation() {
+    var currentScreen by rememberSaveable { mutableStateOf("login")}
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     //var token by rememberSaveable { mutableStateOf<String?>(null) }
     //var token = remember { mutableStateOf<String?>(null) }
     val token = rememberSaveable { mutableStateOf<String?>(null) }
     //var isLoggedIn by remember { mutableStateOf(false) }
 //    val navController = rememberNavController()
-    if (!isLoggedIn) {
-        LoginScreen(
-            onLoginSuccess = {newToken ->
-                token.value = newToken
-                isLoggedIn = true // ✅ update login status
-            }
-        )
-    } else {
-        MainScreen(
-            tokenState = token, // kirim token yang tersimpan
-            onLogout = {
-                token.value = null     // hapus token setelah logout
-                isLoggedIn = false
-            }
-//            onLogout = {
-//                token = token, // ⬅️ kirim ke MainScreen
-//                isLoggedIn = false // ✅ logout cleanly
-//            }
-        )
+    when (currentScreen) {
+        "login" -> {
+            LoginScreen(
+                onLoginSuccess = { newToken ->
+                    token.value = newToken
+                    currentScreen = "main"
+                },
+                onRegisterClick = {
+                    currentScreen = "register"
+                }
+            )
+        }
+
+        "register" -> {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    currentScreen = "login"
+                }
+            )
+        }
+
+        "main" -> {
+            MainScreen(
+                tokenState = token,
+                onLogout = {
+                    token.value = null
+                    currentScreen = "login"
+                }
+            )
+        }
     }
+//    if (!isLoggedIn) {
+//        LoginScreen(
+//            onLoginSuccess = {newToken ->
+//                token.value = newToken
+//                isLoggedIn = true // ✅ update login status
+//            },
+//            onRegisterClick = {
+//                // Navigasi ke halaman register
+//                //RegisterScreen(onRegisterSuccess = ) { }
+//            }
+//        )
+//    } else {
+//        MainScreen(
+//            tokenState = token, // kirim token yang tersimpan
+//            onLogout = {
+//                token.value = null     // hapus token setelah logout
+//                isLoggedIn = false
+//            }
+////            onLogout = {
+////                token = token, // ⬅️ kirim ke MainScreen
+////                isLoggedIn = false // ✅ logout cleanly
+////            }
+//        )
+//    }
 //    NavHost(navController = navController, startDestination = "login") {
 //        composable("login") {
 //            LoginScreen(

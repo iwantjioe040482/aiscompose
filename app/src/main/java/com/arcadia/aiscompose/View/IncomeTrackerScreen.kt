@@ -17,7 +17,11 @@ import com.arcadia.aiscompose.Repository.COAIncomeViewModelFactory
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import com.arcadia.aiscompose.ViewModel.COAViewModel
 import androidx.compose.ui.text.style.TextAlign
-
+import androidx.compose.ui.unit.sp
+import com.arcadia.aiscompose.Model.BalanceResponse
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun IncomeTrackerScreen(token: String) {
@@ -50,7 +54,7 @@ fun IncomeTrackerScreen(token: String) {
     }
 
     //val balance by vm2.balance.collectAsState()
-    val balance : List<Double> = vm2.balance
+    val balance : List<BalanceResponse> = vm2.balance
     val data = vm.coaList
 
     Column(
@@ -108,38 +112,70 @@ fun IncomeTrackerScreen(token: String) {
                 .padding(vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Transaction",
-                modifier = Modifier.weight(1f)
-            )
 
-            Box(modifier = Modifier.weight(2f)) {
-                TextButton(onClick = { transactionExpanded = true }) {
-                    Text(transaction)
-                }
-                DropdownMenu(
-                    expanded = transactionExpanded,
-                    onDismissRequest = { transactionExpanded = false }
-                ) {
-                    listOf(
-                        "Allo Bank", "BCA","Blu", "Cash", "CIMB", "Dana", "Flazz",
-                        "GoPay", "Hana","Mandiri", "Octo", "Ovo", "Permata", "ShopeePay"
-                    ).forEach {
-                        DropdownMenuItem(
-                            text = { Text(it) },
-                            onClick = {
-                                transaction = it
-                                transactionExpanded = false
+                Text(
+                    text = "Transaction",
+                    modifier = Modifier.weight(1f)
+                )
+
+                Box(modifier = Modifier.weight(2f)) {
+                    // Transaction Dropdown - Left-Right (1 row, 2 columns)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 1.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        TextButton(onClick = { transactionExpanded = true }) {
+                            Text(transaction)
+                        }
+                        DropdownMenu(
+                            expanded = transactionExpanded,
+                            onDismissRequest = { transactionExpanded = false }
+                        ) {
+                            listOf(
+                                "Allo Bank",
+                                "BCA",
+                                "Blu",
+                                "Cash",
+                                "CIMB",
+                                "Dana",
+                                "Flazz",
+                                "GoPay",
+                                "Hana",
+                                "HSBC",
+                                "Mandiri",
+                                "Octo",
+                                "Ovo",
+                                "Permata",
+                                "ShopeePay"
+                            ).forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it) },
+                                    onClick = {
+                                        transaction = it
+                                        transactionExpanded = false
+                                    }
+                                )
                             }
+                        }
+
+                        val updatedDate: String =
+                            balance.firstOrNull()?.updated_at ?: "1900-01-01"!!
+
+                        Text(
+                            text = "Last: $updatedDate",
+                            fontSize = 13.sp
                         )
                     }
+
                 }
-            }
+
         }
 
         Spacer(modifier = Modifier.height(2.dp))
 
-        val balanceValue = balance.firstOrNull() ?: 0.0
+        val balanceValue = balance.firstOrNull()?.Balance?: 0.0
 
         Text(
             text = "Balance: Rp ${"%,.2f".format(balanceValue)}",

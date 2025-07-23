@@ -30,7 +30,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 
 @Composable
-fun LoginScreen(onLoginSuccess: (String) -> Unit
+fun LoginScreen(onLoginSuccess: (String) -> Unit,
+                onRegisterClick: () -> Unit // ← Tambahkan ini
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     var email by rememberSaveable { mutableStateOf("") }
@@ -42,6 +43,7 @@ fun LoginScreen(onLoginSuccess: (String) -> Unit
     val loginResult by viewModel.loginResult.collectAsStateWithLifecycle()
 
     val legendColor = if (isDarkTheme) Color(0xFFEEEEEE) else Color(0xFF222222)
+    val legendsColor = if (isDarkTheme) Color(0xFF222222) else Color(0xFFEEEEEE)
 
     val imageRes = if (isDarkTheme) R.drawable.img else R.drawable.imgwhite
 
@@ -90,7 +92,7 @@ fun LoginScreen(onLoginSuccess: (String) -> Unit
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = CardDefaults.cardColors(containerColor = legendsColor),
                 elevation = CardDefaults.cardElevation(6.dp)
             ) {
                 Column(
@@ -151,7 +153,12 @@ fun LoginScreen(onLoginSuccess: (String) -> Unit
                     ) {
                         Text("Login")
                     }
-
+                    TextButton(
+                        onClick = onRegisterClick,
+                        modifier = Modifier.align(Alignment.End) // atau Alignment.CenterHorizontally sesuai desain
+                    ) {
+                        Text("Belum punya akun? Daftar")
+                    }
                     Spacer(modifier = Modifier.height(4.dp))
 
 //                    TextButton(

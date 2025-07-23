@@ -147,7 +147,9 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                         "Insurance" -> InsuranceScreen(token)
                         "Expense" -> ExpenseScreen(token)
                         "Daily" -> DailyExpenseScreen(token)
+                        "COAAccess"-> COAScreen(token)
                         "Assets" -> AssetScreen(token)
+                        //"Payment" -> QrisScreen()
 //                        "Logout" -> {
 //                            // Bisa clear session, token, dsb di sini
 //                            LoginScreen(isLoggedIn = false)

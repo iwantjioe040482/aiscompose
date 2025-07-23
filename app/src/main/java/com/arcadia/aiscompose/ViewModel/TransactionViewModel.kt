@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.COAAccess
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Electricity
@@ -25,6 +27,8 @@ import com.arcadia.aiscompose.Model.WaterView
 import com.arcadia.aiscompose.Repository.TransactionRepository
 import com.arcadia.aiscompose.Repository.WaterRepository
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.compose.runtime.livedata.observeAsState
+import com.arcadia.aiscompose.Model.CoaUserPostDTO
 
 class TransactionViewModel  : ViewModel() {
 
@@ -56,8 +60,8 @@ class TransactionViewModel  : ViewModel() {
 //    private val _balance = MutableStateFlow(0.0)
 //    val balance: StateFlow<Double> = _balance
 
-    private val _balance = mutableStateListOf<Double>()
-    val balance: List<Double> get() = _balance
+    private val _balance = mutableStateListOf<BalanceResponse>()
+    val balance: List<BalanceResponse> get() = _balance
 
     private val _transactionList = mutableStateListOf<TransactionView>()
     val transactionList: List<TransactionView> get() = _transactionList
@@ -74,15 +78,21 @@ class TransactionViewModel  : ViewModel() {
     private val _taxList = mutableStateListOf<TaxItem>()
     val taxList: List<TaxItem> get() = _taxList
 
-    private val _transferResult = mutableStateListOf<TransferResponse?>(null)
-    val transferResult: List<TransferResponse?> = _transferResult
+//    private val _coaaccessList = mutableStateListOf<COAAccess>()
+//    val coaaccessList: List<COAAccess> get() = _coaaccessList
+    //val coaaccessList = MutableLiveData<List<COAAccess>>()
+    private val _coaaccessList = MutableStateFlow<List<COAAccess>>(emptyList())
+    val coaaccessList: StateFlow<List<COAAccess>> get() = _coaaccessList
+
+//    private val _transferResult = mutableStateListOf<TransferResponse?>(null)
+//    val transferResult: List<TransferResponse?> = _transferResult
 
     private val _expenseList = mutableStateListOf<Expense>()
     val expenseList: List<Expense> get() = _expenseList
 
 
-//    private val _transferResult = MutableStateFlow<TransferResponse?>(null)
-//    val transferResult: StateFlow<TransferResponse?> = _transferResult
+    private val _transferResult = MutableStateFlow<List<TransferResponse?>>(emptyList())
+    val transferResult: StateFlow<List<TransferResponse?>> = _transferResult
 
     private val api: TransactionApi
 
@@ -161,6 +171,32 @@ class TransactionViewModel  : ViewModel() {
             }
         }
     }
+    fun submitCOAAccess(selectedItems: List<CoaUserPostDTO>) {
+        viewModelScope.launch {
+            try {
+                TransactionRepository.saveCOAAccess(token.value,selectedItems)
+                Log.d("COASubmit", "Data submitted: $selectedItems")
+            } catch (e: Exception) {
+                Log.e("COASubmit", "Error submitting data", e)
+            }
+        }
+    }
+    fun fetchCOAAccess() {
+        viewModelScope.launch {
+            try {
+                Log.d("COAAcces", "token value: ${token.value}")
+
+                val data = TransactionRepository.getCOAAceess(token.value)
+                Log.d("COAAcces", "data size: ${data.size}")
+                _coaaccessList.value = data
+                //_coaaccessList.clear()          // 🔴 Hapus data lama
+                //_coaaccessList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun fetchExpenseReport() {
         viewModelScope.launch {
@@ -221,9 +257,9 @@ class TransactionViewModel  : ViewModel() {
 
                 val request = TransferRequest(from, To, Amount)
                 val response =TransactionRepository.postTransfer(token.value,request)
-                //_transferResult.value = response
-                _transferResult.clear()
-                _transferResult.addAll(response)
+                _transferResult.value = response
+//                _transferResult.clear()
+//                _transferResult.addAll(response)
                 onSuccess()
             } catch (e: Exception) {
                 onError(e)

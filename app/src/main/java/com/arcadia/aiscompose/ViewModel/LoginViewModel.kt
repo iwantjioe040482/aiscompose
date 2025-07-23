@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.arcadia.aiscompose.AuthApi
 import com.arcadia.aiscompose.Model.LoginResponse
 import com.arcadia.aiscompose.Model.LoginRequest
+import com.arcadia.aiscompose.Model.RegisterRequest
 import androidx.compose.runtime.mutableStateOf
 import com.arcadia.aiscompose.Model.LogoutRequest
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,6 +69,22 @@ class LoginViewModel : ViewModel() {
                 } else {
                     errorMessage.value = "Login gagal: ${response.code()}"
                 }
+            } catch (e: Exception) {
+                errorMessage.value = "Terjadi kesalahan: ${e.message}"
+            }
+        }
+    }
+    fun register(username: String,password: String,name:String)
+    {
+        viewModelScope.launch {
+            try {
+                val registerData = RegisterRequest(
+                    username = username,
+                    password = password,
+                    name = name
+                )
+                val response = api.register(registerData)
+
             } catch (e: Exception) {
                 errorMessage.value = "Terjadi kesalahan: ${e.message}"
             }

@@ -5,6 +5,8 @@ import com.arcadia.aiscompose.Model.COAItem
 import com.arcadia.aiscompose.Model.Transaction
 import com.arcadia.aiscompose.Model.TransactionView
 import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.COAAccess
+import com.arcadia.aiscompose.Model.CoaUserPostDTO
 import com.arcadia.aiscompose.Model.MonthlyPivot
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.InsuranceItem
@@ -36,6 +38,12 @@ interface TransactionApi {
 
     @GET("expense")
     suspend fun getExpense(@Header("Authorization") token: String): List<TransactionView>
+
+    @POST("access")
+    suspend fun getCOAAccess(@Header("Authorization") token: String): List<COAAccess>
+
+    @POST("submitaccess")
+    suspend fun submitCOAUser(@Header("Authorization") token: String,@Body selectedItems: List<CoaUserPostDTO>)
 
     @GET("dailyexpense")
     suspend fun getDailyExpense(@Header("Authorization") token: String): List<DailyReport>

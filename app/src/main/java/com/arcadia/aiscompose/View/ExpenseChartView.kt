@@ -25,7 +25,11 @@ fun ExpenseChartView(expenses: List<Expense>) {
     Column {
         Spacer(modifier = Modifier.height(48.dp))
         //var selectedCoa by remember { mutableStateOf<String?>(null) }
-        val coaList = expenses.map { it.coa_name }.distinct()
+            val coaList = expenses
+                .map { it.coa_name }
+                .distinct()
+                .sorted()
+
         var selectedCoa by remember { mutableStateOf(coaList.firstOrNull()) }
 
         val filteredExpenses = selectedCoa?.let { selected ->
@@ -87,9 +91,15 @@ fun ExpenseChartView(expenses: List<Expense>) {
 
                     val legendColor = if (isDarkTheme) AndroidColor.WHITE else AndroidColor.BLACK
 
+                    val textSize = 12f // ← Adjust this as needed (in sp)
+
+                    //axisLeft.textSize = textSize
+                    chart.xAxis.textSize = textSize
+
                     val setPengeluaran = LineDataSet(entries, "Pengeluaran").apply {
                         color = legendColor
-                        valueTextSize = 8f
+                        valueTextSize = 12f
+                        valueTextColor = legendColor // ← tambahan penting
                         setDrawCircles(false)
                         setDrawValues(true)
                         lineWidth = 2f
@@ -97,12 +107,18 @@ fun ExpenseChartView(expenses: List<Expense>) {
 
                     val setMA100 = LineDataSet(ma100Entries, "MA100").apply {
                         color = AndroidColor.BLUE
+                        valueTextSize = 12f
+                        valueTextColor = AndroidColor.BLUE
+                        setDrawValues(true)
                         setDrawCircles(false)
                         lineWidth = 2f
                     }
 
                     val setMA200 = LineDataSet(ma200Entries, "MA200").apply {
                         color = AndroidColor.RED
+                        valueTextSize = 12f
+                        valueTextColor = AndroidColor.RED
+                        setDrawValues(true)
                         setDrawCircles(false)
                         lineWidth = 2f
                     }
@@ -115,11 +131,18 @@ fun ExpenseChartView(expenses: List<Expense>) {
                         dataSets.add(setMA200)
                     }
 
+
                     chart.data = LineData(dataSets)
 
                     val markerView = ExpenseMarkerView(chart.context)
                     markerView.chartView = chart
                     chart.marker = markerView
+
+                    chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+                    chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+                    chart.xAxis.granularity = 1f
+                    chart.xAxis.textColor=legendColor
+                    chart.xAxis.setDrawGridLines(false)
 
                     chart.description.isEnabled = false
                     chart.legend.isEnabled = true

@@ -5,6 +5,7 @@ import retrofit2.Response
 import com.arcadia.aiscompose.Model.LoginRequest
 import com.arcadia.aiscompose.Model.LoginResponse
 import com.arcadia.aiscompose.Model.LogoutRequest
+import com.arcadia.aiscompose.Model.RegisterRequest
 
 interface AuthApi {
     @POST("/login")
@@ -12,4 +13,7 @@ interface AuthApi {
 
     @POST("/logout")
     suspend fun logout(@Body request: LogoutRequest)
+
+    @POST("/register")
+    suspend fun register(@Body request: RegisterRequest): Response<Unit>
 }

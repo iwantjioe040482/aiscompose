@@ -41,7 +41,8 @@ fun TransferInputForm(token: String) {
         vm2.setToken(token)
     }
 
-    val transferResult : List<TransferResponse?> = vm2.transferResult
+    //val transferResult : List<TransferResponse?> = vm2.transferResult
+    val transferResult by vm2.transferResult.collectAsState()
     //val transferResult by viewModel.transferResult
 
     Column(modifier = Modifier
