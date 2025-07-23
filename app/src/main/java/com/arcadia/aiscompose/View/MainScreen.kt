@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.arcadia.aiscompose.ViewModel.LoginViewModel
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.arcadia.aiscompose.ViewModel.ChangePasswordViewModel
 
 //import androidx.compose.ui.graphics.Color
 
@@ -68,6 +69,9 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
 //    val selectedItem = selectedItemState.value
             val scrollState = rememberScrollState()
 
+    val viewModel2: ChangePasswordViewModel = viewModel()
+    val error = viewModel2.errorMessage.value
+    val success = viewModel2.successMessage.value
             ModalNavigationDrawer(
                 drawerState = drawerState,
                 drawerContent = {
@@ -149,6 +153,13 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                         "Daily" -> DailyExpenseScreen(token)
                         "COAAccess"-> COAScreen(token)
                         "Assets" -> AssetScreen(token)
+                        "ChangePassword" -> ChangePasswordScreen(token,
+                                errorMessage = error,
+                            successMessage = success,
+                            onChangePassword = { current, new, confirm ->
+                                viewModel2.changePassword(current, new, confirm)
+                            })
+
                         //"Payment" -> QrisScreen()
 //                        "Logout" -> {
 //                            // Bisa clear session, token, dsb di sini

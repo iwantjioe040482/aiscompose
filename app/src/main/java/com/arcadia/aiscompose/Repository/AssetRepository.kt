@@ -11,7 +11,8 @@ object AssetRepository {
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://8.222.205.20:3000/") // ganti dengan URL kamu
+            //.baseUrl("http://8.222.205.20:3000/") // ganti dengan URL kamu
+            .baseUrl("https://tosft.my.id/") // ganti dengan URL kamu
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

@@ -36,7 +36,8 @@ class PivotMonthlyViewModel() : ViewModel(){
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://8.222.205.20:3000/") // Ganti URL ini
+//            .baseUrl("http://8.222.205.20:3000/") // Ganti URL ini
+            .baseUrl("https://tosft.my.id/") // ganti dengan URL kamu
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

@@ -25,6 +25,7 @@ class SidebarViewModel : ViewModel() {
                     MenuItem(route = "Transaction", label = "Expense", id = "Transaction"),
                     MenuItem(route = "Incomes", label = "Incomes", id = "Incomes"),
                     MenuItem(route = "Transfer", label = "Transfer", id = "Transfer"),
+                    MenuItem(route = "Assets", label = "Assets", id = "Assets"),
 
                     // Report Group
                     MenuItem(
@@ -40,7 +41,6 @@ class SidebarViewModel : ViewModel() {
                         )
                     ),
 
-                    MenuItem(route = "Assets", label = "Assets", id = "Assets"),
                     //MenuItem(route = "Payment", label = "Payment", id = "Payment"),
                     MenuItem(
                         label = "Setting",
@@ -50,6 +50,7 @@ class SidebarViewModel : ViewModel() {
                         )
                     ),
                     // Logout item
+                    MenuItem(route = "ChangePassword", label = "Change Password", id = "ChangePassword"),
                     MenuItem(route = "Logout", label = "Logout", id = "Logout")
                 )
 //                listOf(
