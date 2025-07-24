@@ -23,6 +23,9 @@ import com.arcadia.aiscompose.ViewModel.LoginViewModel
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.arcadia.aiscompose.ViewModel.ChangePasswordViewModel
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 //import androidx.compose.ui.graphics.Color
 
@@ -68,10 +71,12 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
 //    val menuItems = menuItemsState.value
 //    val selectedItem = selectedItemState.value
             val scrollState = rememberScrollState()
-
+    val viewModel3: LoginViewModel = viewModel()
     val viewModel2: ChangePasswordViewModel = viewModel()
     val error = viewModel2.errorMessage.value
     val success = viewModel2.successMessage.value
+    val coroutineScope = rememberCoroutineScope()
+
             ModalNavigationDrawer(
                 drawerState = drawerState,
                 drawerContent = {
@@ -154,11 +159,25 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                         "COAAccess"-> COAScreen(token)
                         "Assets" -> AssetScreen(token)
                         "ChangePassword" -> ChangePasswordScreen(token,
-                                errorMessage = error,
-                            successMessage = success,
+//                                errorMessage = error,
+//                            successMessage = success,
                             onChangePassword = { current, new, confirm ->
+                                viewModel2.setToken(token)
                                 viewModel2.changePassword(current, new, confirm)
-                            })
+                                viewModel.selectMenuItem(menuItems.firstOrNull()) // opsional: kembalikan ke "Home"
+                                onLogout()
+                            },
+                            onLogout = {
+//                                coroutineScope.launch {
+//                                    LoginViewModel().logout(token)
+//                                    tokenState.value = null // 🔥 Token dihapus
+//                                }
+                            },
+                                    //viewModel3.logout(token)
+//                                // Tambahkan aksi logout di sini, misalnya hapus token, pindah ke login screen, dll.
+//                                tokenState.value = null
+                            //}
+                        )
 
                         //"Payment" -> QrisScreen()
 //                        "Logout" -> {

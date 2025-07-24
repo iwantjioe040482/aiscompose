@@ -6,6 +6,7 @@ import com.arcadia.aiscompose.Model.LoginRequest
 import com.arcadia.aiscompose.Model.LoginResponse
 import com.arcadia.aiscompose.Model.LogoutRequest
 import com.arcadia.aiscompose.Model.RegisterRequest
+import com.arcadia.aiscompose.Model.ChangePass
 
 interface AuthApi {
     @POST("/login")
@@ -16,4 +17,7 @@ interface AuthApi {
 
     @POST("/register")
     suspend fun register(@Body request: RegisterRequest): Response<Unit>
+
+    @POST("/changepass")
+    suspend fun changepass(@Header("Authorization") token: String,@Body request: ChangePass): Response<Unit>
 }

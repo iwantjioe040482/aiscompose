@@ -1,6 +1,7 @@
 package com.arcadia.aiscompose.View
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -10,7 +11,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.arcadia.aiscompose.ui.theme.ArcadiaTheme
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.MutableState
 
 class MainActivity  : ComponentActivity() {
@@ -40,14 +40,17 @@ class MainActivity  : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     var currentScreen by rememberSaveable { mutableStateOf("login")}
-    var isLoggedIn by rememberSaveable { mutableStateOf(false) }
+    //var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     //var token by rememberSaveable { mutableStateOf<String?>(null) }
     //var token = remember { mutableStateOf<String?>(null) }
     val token = rememberSaveable { mutableStateOf<String?>(null) }
     //var isLoggedIn by remember { mutableStateOf(false) }
 //    val navController = rememberNavController()
-    when (currentScreen) {
-        "login" -> {
+    Log.d("ChangePassword", "token value : ${token.value}")
+    Log.d("ChangePassword", "current screen : ${currentScreen}")
+
+    when {
+        token.value == null && currentScreen == "login" -> {
             LoginScreen(
                 onLoginSuccess = { newToken ->
                     token.value = newToken
@@ -59,7 +62,7 @@ fun AppNavigation() {
             )
         }
 
-        "register" -> {
+        currentScreen == "register" -> {
             RegisterScreen(
                 onRegisterSuccess = {
                     currentScreen = "login"
@@ -67,7 +70,7 @@ fun AppNavigation() {
             )
         }
 
-        "main" -> {
+        token.value != null && currentScreen == "main" -> {
             MainScreen(
                 tokenState = token,
                 onLogout = {
@@ -77,6 +80,38 @@ fun AppNavigation() {
             )
         }
     }
+
+//    when (currentScreen) {
+//        "login" -> {
+//            LoginScreen(
+//                onLoginSuccess = { newToken ->
+//                    token.value = newToken
+//                    currentScreen = "main"
+//                },
+//                onRegisterClick = {
+//                    currentScreen = "register"
+//                }
+//            )
+//        }
+//
+//        "register" -> {
+//            RegisterScreen(
+//                onRegisterSuccess = {
+//                    currentScreen = "login"
+//                }
+//            )
+//        }
+//
+//        "main" -> {
+//            MainScreen(
+//                tokenState = token,
+//                onLogout = {
+//                    token.value = null
+//                    currentScreen = "login"
+//                }
+//            )
+//        }
+//    }
 //    if (!isLoggedIn) {
 //        LoginScreen(
 //            onLoginSuccess = {newToken ->

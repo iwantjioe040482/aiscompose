@@ -9,21 +9,56 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
-
+import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
+import com.arcadia.aiscompose.ViewModel.ChangePasswordViewModel
+import com.arcadia.aiscompose.ViewModel.TransactionViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun ChangePasswordScreen(
     token:String,
     onChangePassword: (current: String, new: String, confirm: String) -> Unit,
-    errorMessage: String? = null,
-    successMessage: String? = null
+//    errorMessage: String? = null,
+//    successMessage: String? = null,
+    onLogout: () -> Unit ,// ✅ untuk trigger logout dari parent composable
+    viewModel: ChangePasswordViewModel = viewModel() // ✅ Tambahkan ini
 ) {
+
+
+
+    var localErrorMessage by remember { mutableStateOf<String?>(null) }
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
     var showError by remember { mutableStateOf(false) }
 
+//    val errorMessage = viewModel.errorMessage.value
+//    val successMessage = viewModel.successMessage.value
+//    val shouldLogout = viewModel.shouldLogout.value
+    val errorMessage by viewModel.errorMessage
+    val successMessage by viewModel.successMessage
+    val shouldLogout by viewModel.shouldLogout
+
+    LaunchedEffect(Unit) {
+        viewModel.setToken(token)
+    }
+
+    // 🔄 Pantau apakah sudah waktunya logout
+    LaunchedEffect(shouldLogout) {
+        if (shouldLogout) {
+            onLogout()
+        }
+    }
+    LaunchedEffect(successMessage) {
+        if (!successMessage.isNullOrEmpty()) {
+            currentPassword = ""
+            newPassword = ""
+            confirmPassword = ""
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,12 +67,15 @@ fun ChangePasswordScreen(
     ) {
         Text("Change Password", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
-        if (errorMessage != null && showError) {
-            Text(errorMessage, color = Color.Red)
+        Log.d("ChangePassword", "Error : ${errorMessage}")
+
+        if (localErrorMessage != null && showError) {
+            Text(localErrorMessage!!, color = Color.Red)
         }
 
-        if (successMessage != null) {
-            Text(successMessage, color = Color.Green)
+        val message = successMessage
+        if (message != null) {
+            Text(message, color = Color.Green)
         }
 
         OutlinedTextField(
@@ -69,9 +107,12 @@ fun ChangePasswordScreen(
                 showError = true
                 if (newPassword != confirmPassword) {
                     // Invalid confirm password
+                    localErrorMessage = "Konfirmasi password tidak sama"
                     return@Button
                 }
+                localErrorMessage = null // reset kalau valid
                 onChangePassword(currentPassword, newPassword, confirmPassword)
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {
