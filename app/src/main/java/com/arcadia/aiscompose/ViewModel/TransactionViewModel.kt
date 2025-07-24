@@ -66,6 +66,9 @@ class TransactionViewModel  : ViewModel() {
     private val _transactionList = mutableStateListOf<TransactionView>()
     val transactionList: List<TransactionView> get() = _transactionList
 
+    private val _transactionincomeList = mutableStateListOf<TransactionView>()
+    val transactionincomeList: List<TransactionView> get() = _transactionincomeList
+
     private val _dailyexpenseList = mutableStateListOf<DailyReport>()
     val dailyexpenseList: List<DailyReport> get() = _dailyexpenseList
 
@@ -247,6 +250,20 @@ class TransactionViewModel  : ViewModel() {
         }
     }
 
+    fun fetchIncome() {
+        viewModelScope.launch {
+            try {
+//                val data = api.getExpense()
+//                _transactionList.value = data
+                val data = TransactionRepository.getIncome(token.value)
+                _transactionincomeList.clear()          // 🔴 Hapus data lama
+                _transactionincomeList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun submitTransfer(from: String,To: String, Amount : Double, onSuccess: () -> Unit = {}, onError: (Throwable) -> Unit = {})
     {

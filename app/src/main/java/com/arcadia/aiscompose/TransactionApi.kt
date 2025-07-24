@@ -39,6 +39,10 @@ interface TransactionApi {
     @GET("expense")
     suspend fun getExpense(@Header("Authorization") token: String): List<TransactionView>
 
+
+    @GET("income")
+    suspend fun getIncome(@Header("Authorization") token: String): List<TransactionView>
+
     @POST("access")
     suspend fun getCOAAccess(@Header("Authorization") token: String): List<COAAccess>
 

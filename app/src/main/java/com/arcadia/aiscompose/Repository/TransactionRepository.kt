@@ -47,6 +47,10 @@ object TransactionRepository {
         return api.getExpense("Bearer $token")
     }
 
+    suspend fun getIncome(token: String): List<TransactionView> {
+        return api.getIncome("Bearer $token")
+    }
+
     suspend fun getInsurance(token: String): List<InsuranceItem> {
         return api.getInsurance("Bearer $token")
     }

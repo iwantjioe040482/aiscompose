@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import com.arcadia.aiscompose.Model.Transaction
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,7 @@ import com.arcadia.aiscompose.ViewModel.COAViewModel
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.TransactionView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -45,6 +47,7 @@ fun IncomeTrackerScreen(token: String) {
 
     LaunchedEffect(token) {
         vm2.setToken(token)
+        vm2.fetchIncome()
         vm.setToken(token)
         vm.fetchCOAIncomes()
     }
@@ -53,6 +56,7 @@ fun IncomeTrackerScreen(token: String) {
         vm2.fetchBalanceByCOA(transaction)
     }
 
+    val transactionList : List<TransactionView> = vm2.transactionincomeList
     //val balance by vm2.balance.collectAsState()
     val balance : List<BalanceResponse> = vm2.balance
     val data = vm.coaList
@@ -219,6 +223,22 @@ fun IncomeTrackerScreen(token: String) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Submit")
+        }
+
+        Spacer(modifier = Modifier.height(1.dp))
+
+        // Expense List
+        Text("Daily Income", style = MaterialTheme.typography.titleMedium,textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth() // <- penting agar bisa center
+                .padding(bottom = 1.dp)
+        )
+        Spacer(modifier = Modifier.height(3.dp))
+
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(transactionList.size) { index ->
+                TransactionItem(transactionList[index])
+            }
         }
 
         Spacer(modifier = Modifier.height(4.dp))
