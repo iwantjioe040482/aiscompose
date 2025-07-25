@@ -27,11 +27,15 @@ fun COAScreen(token: String) {
     }
 
     val originalItems by vm2.coaaccessList.collectAsState()
-    var coaItems by remember { mutableStateOf<List<COAAccess>>(emptyList()) }
+    //var coaItems by remember { mutableStateOf<List<COAAccess>>(emptyList()) }
+    var coaItems by remember(originalItems) { mutableStateOf(originalItems) }
 
     LaunchedEffect(originalItems) {
-        coaItems = originalItems
-        Log.d("COAAccess", "originalItems size: ${originalItems.size}")
+        if (coaItems.isEmpty()) {
+            coaItems = originalItems
+        }
+//        coaItems = originalItems
+//        Log.d("COAAccess", "originalItems size: ${originalItems.size}")
     }
 
     Scaffold(
@@ -42,6 +46,8 @@ fun COAScreen(token: String) {
                     Log.d("COAScreen", "Selected: $selected")
                     val postData = selected.map { CoaUserPostDTO(it.coa_id) }
                     vm2.submitCOAAccess(postData)
+                    //coaItems= emptyList()
+                    //vm2.fetchCOAAccess()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,6 +97,7 @@ fun COACheckboxGroupedList(
             .padding(16.dp)
     ) {
         groupedItems.forEach { (prefix, group) ->
+            val sortedGroup = group.sortedBy { it.is_checked } // unchecked (0) first
             item {
                 Text(
                     text = categoryLabels[prefix] ?: "Kategori $prefix",
@@ -99,7 +106,7 @@ fun COACheckboxGroupedList(
                 )
             }
 
-            items(group) { item ->
+            items(sortedGroup) { item ->// use sortedGroup here
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier

@@ -179,7 +179,7 @@ class TransactionViewModel  : ViewModel() {
         viewModelScope.launch {
             try {
                 TransactionRepository.saveCOAAccess(token.value,selectedItems)
-                Log.d("COASubmit", "Data submitted: $selectedItems")
+                //Log.d("COASubmit", "Data submitted: $selectedItems")
             } catch (e: Exception) {
                 Log.e("COASubmit", "Error submitting data", e)
             }
@@ -269,12 +269,13 @@ class TransactionViewModel  : ViewModel() {
     {
         viewModelScope.launch {
             try {
-                val data = TransactionRepository.getExpense(token.value)
-                _transactionList.clear()          // 🔴 Hapus data lama
-                _transactionList.addAll (data)
+//                val data = TransactionRepository.getExpense(token.value)
+//                _transactionList.clear()          // 🔴 Hapus data lama
+//                _transactionList.addAll (data)
 
                 val request = TransferRequest(from, To, Amount)
                 val response =TransactionRepository.postTransfer(token.value,request)
+                Log.d("TransferViewModel", "Response from server: $response")
                 _transferResult.value = response
 //                _transferResult.clear()
 //                _transferResult.addAll(response)

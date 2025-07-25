@@ -17,7 +17,6 @@ import com.arcadia.aiscompose.Model.TransferResponse
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import com.arcadia.aiscompose.ViewModel.ElectricityViewModel
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
-
 //import androidx.compose.ui.text.input.KeyboardOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,12 +36,13 @@ fun TransferInputForm(token: String) {
     val factory = remember { TransactionViewModelFactory(token) }
     val vm2 : TransactionViewModel = viewModel(factory = factory)
 
+    val transferResult by vm2.transferResult.collectAsState()
+
     LaunchedEffect(token) {
         vm2.setToken(token)
     }
 
     //val transferResult : List<TransferResponse?> = vm2.transferResult
-    val transferResult by vm2.transferResult.collectAsState()
     //val transferResult by viewModel.transferResult
 
     Column(modifier = Modifier
@@ -150,6 +150,8 @@ fun TransferInputForm(token: String) {
         ) {
             Text("Submit")
         }
+
+
         Column(modifier = Modifier.padding(16.dp)) {
             // Form submit transfer (dari sebelumnya)
 
