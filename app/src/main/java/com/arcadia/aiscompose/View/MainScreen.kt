@@ -155,6 +155,7 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                         "CreditCard" -> CreditCardScreen(token)
                         "Insurance" -> InsuranceScreen(token)
                         "Expense" -> ExpenseScreen(token)
+                        "ExpensePriority" -> ExpensePriorityScreen(token)
                         "Daily" -> DailyExpenseScreen(token)
                         "COAAccess"-> COAScreen(token)
                         "Assets" -> AssetScreen(token)

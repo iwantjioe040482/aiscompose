@@ -29,6 +29,7 @@ import com.arcadia.aiscompose.Repository.WaterRepository
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.livedata.observeAsState
 import com.arcadia.aiscompose.Model.CoaUserPostDTO
+import com.arcadia.aiscompose.Model.PriorityItem
 
 class TransactionViewModel  : ViewModel() {
 
@@ -77,6 +78,9 @@ class TransactionViewModel  : ViewModel() {
 
     private val _creditcardList = mutableStateListOf<CreditCardItem>()
     val creditcardList: List<CreditCardItem> get() = _creditcardList
+
+    private val _priorityList = mutableStateListOf<PriorityItem>()
+    val priorityList: List<PriorityItem> get() = _priorityList
 
     private val _taxList = mutableStateListOf<TaxItem>()
     val taxList: List<TaxItem> get() = _taxList
@@ -138,6 +142,21 @@ class TransactionViewModel  : ViewModel() {
                 val data = TransactionRepository.getTax(token.value)
                 _taxList.clear()          // 🔴 Hapus data lama
                 _taxList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    fun fetchPriorityReport() {
+        viewModelScope.launch {
+            try {
+
+                val data = TransactionRepository.getPriorityReport(token.value)
+                _priorityList.clear()          // 🔴 Hapus data lama
+                _priorityList.addAll (data)
 
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -12,6 +12,7 @@ import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.LogoutRequest
+import com.arcadia.aiscompose.Model.PriorityItem
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.Transaction
 import com.arcadia.aiscompose.Model.TransactionView
@@ -57,6 +58,10 @@ object TransactionRepository {
 
     suspend fun getCreditCard(token: String): List<CreditCardItem> {
         return api.getCreditCard("Bearer $token")
+    }
+
+    suspend fun getPriorityReport(token: String): List<PriorityItem> {
+        return api.getPriorityReport("Bearer $token")
     }
 
     suspend fun getTax(token: String): List<TaxItem> {

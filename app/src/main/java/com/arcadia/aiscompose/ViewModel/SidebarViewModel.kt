@@ -35,6 +35,7 @@ class SidebarViewModel : ViewModel() {
                             MenuItem(route = "Daily", label = "Expense Daily", id = "Daily"),
                             MenuItem(route = "Pivot", label = "Expense Monthly Pivot", id = "Pivot"),
                             MenuItem(route = "Expense", label = "Expense Monthly", id = "Expense"),
+                            MenuItem(route = "ExpensePriority", label = "Expense Priority Monthly", id = "ExpensePriority"),
                             MenuItem(route = "Tax", label = "Tax", id = "Tax"),
                             MenuItem(route = "CreditCard", label = "Credit Card", id = "CreditCard"),
                             MenuItem(route = "Insurance", label = "Insurance", id = "Insurance")
