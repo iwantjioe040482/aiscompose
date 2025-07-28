@@ -388,6 +388,33 @@ class TransactionViewModel  : ViewModel() {
         }
     }
 
+    fun submitExpenses(type: String,expense: Transaction, onSuccess: () -> Unit = {}, onError: (Throwable) -> Unit = {}) {
+        Log.d("TransViewModel",type)
+
+        viewModelScope.launch {
+            try {
+                TransactionRepository.submitExpenses(token.value, type, expense)
+                Log.d("TransViewModel",type)
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
+
+    fun submitIncomes(type: String,expense: Transaction, onSuccess: () -> Unit = {}, onError: (Throwable) -> Unit = {}) {
+        Log.d("TransViewModel",type)
+
+        viewModelScope.launch {
+            try {
+                TransactionRepository.submitIncomes(token.value, type, expense)
+                Log.d("TransViewModel",type)
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
 
 
 }

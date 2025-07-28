@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import com.arcadia.aiscompose.Model.COAItem
 import java.util.TimeZone
+import android.util.Log
 
 @Composable
 fun ExpenseTrackerScreen(token: String) {
@@ -310,8 +311,9 @@ fun ExpenseTrackerScreen(token: String) {
                         description = description,
                         priority_id = priorityId
                     )
+                    Log.d("TransViewModel","ke sini")
 
-                    vm2.submitExpense(transaction, newExpense,
+                    vm2.submitExpenses(transaction, newExpense,
                         onSuccess = {
                             vm2.fetchBalanceByCOA(transaction)
                             vm2.fetchExpense()

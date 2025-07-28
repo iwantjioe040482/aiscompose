@@ -18,6 +18,7 @@ import com.arcadia.aiscompose.Model.Transaction
 import com.arcadia.aiscompose.Model.TransactionView
 import com.arcadia.aiscompose.Model.TransferRequest
 import com.arcadia.aiscompose.Model.TransferResponse
+import com.arcadia.aiscompose.Model.TransactionWithType
 import com.arcadia.aiscompose.TransactionApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -90,6 +91,14 @@ object TransactionRepository {
 
     suspend fun getExpenseReport(token: String):List<Expense> {
         return api.getExpenseReport("Bearer $token")
+    }
+
+    suspend fun submitExpenses(token: String, type: String, expense: Transaction) {
+        return api.submitExpenses("Bearer $token", TransactionWithType(type, expense))
+    }
+
+    suspend fun submitIncomes(token: String, type: String, expense: Transaction) {
+        return api.submitIncomes("Bearer $token", TransactionWithType(type, expense))
     }
 
     suspend fun submitAlloBankExpense(token: String,expense: Transaction) {

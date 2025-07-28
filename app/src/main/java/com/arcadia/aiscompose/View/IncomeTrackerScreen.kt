@@ -219,7 +219,7 @@ fun IncomeTrackerScreen(token: String) {
                         description = description,
                         priority_id = 1
                     )
-                    vm2.submitIncome(transaction, newExpense,
+                    vm2.submitIncomes(transaction, newExpense,
                         onSuccess = {
                             vm2.fetchBalanceByCOA(transaction)
                             vm2.fetchExpense()
