@@ -21,6 +21,9 @@ interface TransactionApi {
     @GET("COAExpense")
     suspend fun getCOAList(@Header("Authorization") token: String): List<COAItem>
 
+    @GET("COATrans")
+    suspend fun getCOATrans(@Header("Authorization") token: String): List<COAItem>
+
     @GET("COAIncome")
     suspend fun getCOAIncome(@Header("Authorization") token: String): List<COAItem>
 

@@ -52,6 +52,7 @@ class SidebarViewModel : ViewModel() {
                     ),
                     // Logout item
                     MenuItem(route = "ChangePassword", label = "Change Password", id = "ChangePassword"),
+                    MenuItem(route = "ContactUs", label = "Contact Us", id = "ContactUs"),
                     MenuItem(route = "Logout", label = "Logout", id = "Logout")
                 )
 //                listOf(

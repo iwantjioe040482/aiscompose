@@ -26,6 +26,9 @@ import com.arcadia.aiscompose.ViewModel.ChangePasswordViewModel
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import android.net.Uri
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
 
 //import androidx.compose.ui.graphics.Color
 
@@ -205,6 +208,7 @@ fun MenuItemView(
     //token: String // ⬅️ Tambah ini
     tokenState: MutableState<String?>
 ) {
+    val context = LocalContext.current // ✅ DI SINI: dalam lingkup fungsi @Composable
     val coroutineScope = rememberCoroutineScope()
     val viewModel: LoginViewModel = viewModel()
     val isSelected = item == selectedItem
@@ -239,7 +243,15 @@ fun MenuItemView(
                             }
                         }
                         else -> {
-                            onClick(item)
+                            if (item.route == "ContactUs") {
+                                val phoneNumber = "6281513001462" // Ganti nomor WA
+                                val message = "Halo, saya ingin bertanya"
+                                val url = "https://wa.me/$phoneNumber?text=${Uri.encode(message)}"
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(intent)
+                            } else {
+                                onClick(item)
+                            }
                         }
                     }
                 }

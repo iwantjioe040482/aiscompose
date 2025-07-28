@@ -12,9 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arcadia.aiscompose.Model.COAItem
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.TransferResponse
+import com.arcadia.aiscompose.Repository.COAIncomeViewModelFactory
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
+import com.arcadia.aiscompose.ViewModel.COAIncomeViewModel
 import com.arcadia.aiscompose.ViewModel.ElectricityViewModel
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 //import androidx.compose.ui.text.input.KeyboardOptions
@@ -23,7 +26,7 @@ import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 @Composable
 fun TransferInputForm(token: String) {
 //    val viewModel: TransactionViewModel = viewModel()
-    val paymentOptions = listOf("BCA","Blue", "CIMB", "Cash","Flazz","GoPay","Hana","Mandiri","Octo", "Ovo", "ShopeePay")
+    val paymentOptions = listOf("BCA","Blue", "CIMB", "Cash","Flazz","GoPay","Hana","HSBC","Mandiri","Octo", "Ovo", "ShopeePay")
 
     var source by remember { mutableStateOf(paymentOptions.first()) }
     var destination by remember { mutableStateOf(paymentOptions.last()) }
@@ -36,14 +39,21 @@ fun TransferInputForm(token: String) {
     val factory = remember { TransactionViewModelFactory(token) }
     val vm2 : TransactionViewModel = viewModel(factory = factory)
 
+    val factory2 = remember { COAIncomeViewModelFactory(token) }
+    val vm: COAIncomeViewModel = viewModel(factory = factory2)
+
     val transferResult by vm2.transferResult.collectAsState()
 
     LaunchedEffect(token) {
         vm2.setToken(token)
+        vm.setToken(token)
+        vm.fetchCOATrans()
     }
 
     //val transferResult : List<TransferResponse?> = vm2.transferResult
     //val transferResult by viewModel.transferResult
+    val coaList : List<COAItem> = vm.coatransList
+    //val coaListto : List<COAItem> = vm.coatransList
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -69,15 +79,24 @@ fun TransferInputForm(token: String) {
                 expanded = expandedSource,
                 onDismissRequest = { expandedSource = false }
             ) {
-                paymentOptions.forEach {
+                coaList.forEach { item ->
                     DropdownMenuItem(
-                        text = { Text(it) },
+                        text = { Text(item.coa_name) },
                         onClick = {
-                            source = it
+                            source = item.route_name  // Simpan value (route_name)
                             expandedSource = false
                         }
                     )
                 }
+//                paymentOptions.forEach {
+//                    DropdownMenuItem(
+//                        text = { Text(it) },
+//                        onClick = {
+//                            source = it
+//                            expandedSource = false
+//                        }
+//                    )
+//                }
             }
         }
 
@@ -99,15 +118,24 @@ fun TransferInputForm(token: String) {
                 expanded = expandedDestination,
                 onDismissRequest = { expandedDestination = false }
             ) {
-                paymentOptions.forEach {
+                coaList.forEach { item ->
                     DropdownMenuItem(
-                        text = { Text(it) },
+                        text = { Text(item.coa_name) },
                         onClick = {
-                            destination = it
+                            destination = item.route_name  // Simpan value (route_name)
                             expandedDestination = false
                         }
                     )
                 }
+//                paymentOptions.forEach {
+//                    DropdownMenuItem(
+//                        text = { Text(it) },
+//                        onClick = {
+//                            destination = it
+//                            expandedDestination = false
+//                        }
+//                    )
+//                }
             }
         }
 

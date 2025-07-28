@@ -76,6 +76,10 @@ object TransactionRepository {
         return api.getCOAList("Bearer $token")
     }
 
+    suspend fun getCOATrans(token: String): List<COAItem> {
+        return api.getCOATrans("Bearer $token")
+    }
+
     suspend fun getCOAIncome(token: String): List<COAItem> {
         return api.getCOAIncome("Bearer $token")
     }

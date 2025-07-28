@@ -22,6 +22,9 @@ class COAViewModel  : ViewModel() {
     private val _coaList = mutableStateListOf<COAItem>()
     val coaList: List<COAItem> get() = _coaList
 
+    private val _coatransList = mutableStateListOf<COAItem>()
+    val coatransList: List<COAItem> get() = _coatransList
+
     private val api: TransactionApi
 
     init {
@@ -46,6 +49,19 @@ class COAViewModel  : ViewModel() {
                 val data = TransactionRepository.getCOAList(token.value)
                 _coaList.clear()          // 🔴 Hapus data lama
                 _coaList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun fetchCOATrans() {
+        viewModelScope.launch {
+            try {
+                val data = TransactionRepository.getCOATrans(token.value)
+                _coatransList.clear()          // 🔴 Hapus data lama
+                _coatransList.addAll (data)
 
             } catch (e: Exception) {
                 e.printStackTrace()

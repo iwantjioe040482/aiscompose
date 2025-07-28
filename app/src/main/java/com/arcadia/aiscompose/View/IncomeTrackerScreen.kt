@@ -20,6 +20,7 @@ import com.arcadia.aiscompose.ViewModel.COAViewModel
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.arcadia.aiscompose.Model.BalanceResponse
+import com.arcadia.aiscompose.Model.COAItem
 import com.arcadia.aiscompose.Model.TransactionView
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,6 +51,7 @@ fun IncomeTrackerScreen(token: String) {
         vm2.fetchIncome()
         vm.setToken(token)
         vm.fetchCOAIncomes()
+        vm.fetchCOATrans()
     }
 
     LaunchedEffect(transaction) {
@@ -60,6 +62,7 @@ fun IncomeTrackerScreen(token: String) {
     //val balance by vm2.balance.collectAsState()
     val balance : List<BalanceResponse> = vm2.balance
     val data = vm.coaList
+    val coaList : List<COAItem> = vm.coatransList
 
     Column(
         modifier = Modifier
@@ -137,31 +140,40 @@ fun IncomeTrackerScreen(token: String) {
                             expanded = transactionExpanded,
                             onDismissRequest = { transactionExpanded = false }
                         ) {
-                            listOf(
-                                "Allo Bank",
-                                "BCA",
-                                "Blu",
-                                "Cash",
-                                "CIMB",
-                                "Dana",
-                                "Flazz",
-                                "GoPay",
-                                "Hana",
-                                "HSBC",
-                                "Mandiri",
-                                "Octo",
-                                "Ovo",
-                                "Permata",
-                                "ShopeePay"
-                            ).forEach {
+                            coaList.forEach { item ->
                                 DropdownMenuItem(
-                                    text = { Text(it) },
+                                    text = { Text(item.coa_name) },
                                     onClick = {
-                                        transaction = it
+                                        transaction = item.route_name  // Simpan value (route_name)
                                         transactionExpanded = false
                                     }
                                 )
                             }
+//                            listOf(
+//                                "Allo Bank",
+//                                "BCA",
+//                                "Blu",
+//                                "Cash",
+//                                "CIMB",
+//                                "Dana",
+//                                "Flazz",
+//                                "GoPay",
+//                                "Hana",
+//                                "HSBC",
+//                                "Mandiri",
+//                                "Octo",
+//                                "Ovo",
+//                                "Permata",
+//                                "ShopeePay"
+//                            ).forEach {
+//                                DropdownMenuItem(
+//                                    text = { Text(it) },
+//                                    onClick = {
+//                                        transaction = it
+//                                        transactionExpanded = false
+//                                    }
+//                                )
+//                            }
                         }
 
                         val updatedDate: String =

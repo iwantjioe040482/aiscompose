@@ -28,6 +28,7 @@ import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
+import com.arcadia.aiscompose.Model.COAItem
 import java.util.TimeZone
 
 @Composable
@@ -55,8 +56,11 @@ fun ExpenseTrackerScreen(token: String) {
     LaunchedEffect(token) {
         vm2.setToken(token)
         vm.setToken(token)
+
         vm2.fetchExpense()
         vm.fetchCOAExpense()
+        vm.fetchCOATrans()
+
     }
 
     LaunchedEffect(transaction) {
@@ -68,6 +72,7 @@ fun ExpenseTrackerScreen(token: String) {
     //val balance by vm2.balance.collectAsState()
     //val transactionList by vm2.transactionList.collectAsState()
     val transactionList : List<TransactionView> = vm2.transactionList
+    val coaList : List<COAItem> = vm.coatransList
 
 
     Column(
@@ -118,31 +123,40 @@ fun ExpenseTrackerScreen(token: String) {
                         expanded = transactionExpanded,
                         onDismissRequest = { transactionExpanded = false }
                     ) {
-                        listOf(
-                            "Allo Bank",
-                            "Blu",
-                            "BCA",
-                            "Cash",
-                            "CIMB",
-                            "Dana",
-                            "Flazz",
-                            "GoPay",
-                            "Hana",
-                            "HSBC",
-                            "Mandiri",
-                            "Octo",
-                            "Ovo",
-                            "Permata",
-                            "ShopeePay"
-                        ).forEach {
+                        coaList.forEach { item ->
                             DropdownMenuItem(
-                                text = { Text(it) },
+                                text = { Text(item.coa_name) },
                                 onClick = {
-                                    transaction = it
+                                    transaction = item.route_name  // Simpan value (route_name)
                                     transactionExpanded = false
                                 }
                             )
                         }
+//                        listOf(
+//                            "Allo Bank",
+//                            "Blu",
+//                            "BCA",
+//                            "Cash",
+//                            "CIMB",
+//                            "Dana",
+//                            "Flazz",
+//                            "GoPay",
+//                            "Hana",
+//                            "HSBC",
+//                            "Mandiri",
+//                            "Octo",
+//                            "Ovo",
+//                            "Permata",
+//                            "ShopeePay"
+//                        ).forEach {
+//                            DropdownMenuItem(
+//                                text = { Text(it) },
+//                                onClick = {
+//                                    transaction = it
+//                                    transactionExpanded = false
+//                                }
+//                            )
+//                        }
                     }
 
 //                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

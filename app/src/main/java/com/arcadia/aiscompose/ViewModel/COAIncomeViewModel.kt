@@ -23,36 +23,51 @@ class COAIncomeViewModel: ViewModel()  {
     private val _coaList = mutableStateListOf<COAItem>()
     val coaList: List<COAItem> get() = _coaList
 
-private val api: TransactionApi
+    private val _coatransList = mutableStateListOf<COAItem>()
+    val coatransList: List<COAItem> get() = _coatransList
 
-init {
-    val retrofit = Retrofit.Builder()
-//        .baseUrl("http://8.222.205.20:3000/") // Ganti URL ini
-        .baseUrl("https://tosft.my.id/") // ganti dengan URL kamu
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val api: TransactionApi
 
-    api = retrofit.create(TransactionApi::class.java)
-    //fetchCOAIncomes()
-}
+    init {
+        val retrofit = Retrofit.Builder()
+    //        .baseUrl("http://8.222.205.20:3000/") // Ganti URL ini
+            .baseUrl("https://tosft.my.id/") // ganti dengan URL kamu
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-fun setToken(newToken: String) {
-    _token.value = newToken
-}
+        api = retrofit.create(TransactionApi::class.java)
+        //fetchCOAIncomes()
+    }
 
-fun fetchCOAIncomes() {
-    viewModelScope.launch {
-        try {
-//            val data = api.getCOAIncome()
-//            _coaList.value = data
+    fun setToken(newToken: String) {
+        _token.value = newToken
+    }
 
-            val data = TransactionRepository.getCOAIncome(token.value)
-            _coaList.clear()          // 🔴 Hapus data lama
-            _coaList.addAll (data)
+    fun fetchCOAIncomes() {
+        viewModelScope.launch {
+            try {
+    //            val data = api.getCOAIncome()
+    //            _coaList.value = data
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+                val data = TransactionRepository.getCOAIncome(token.value)
+                _coaList.clear()          // 🔴 Hapus data lama
+                _coaList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
-}
+    fun fetchCOATrans() {
+        viewModelScope.launch {
+            try {
+                val data = TransactionRepository.getCOATrans(token.value)
+                _coatransList.clear()          // 🔴 Hapus data lama
+                _coatransList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 }
