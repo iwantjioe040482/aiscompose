@@ -5,6 +5,9 @@ import com.arcadia.aiscompose.Model.Transaction
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.Visibility
+//import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
@@ -25,6 +28,8 @@ import com.arcadia.aiscompose.Model.TransactionView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 
 @Composable
 fun IncomeTrackerScreen(token: String) {
@@ -63,6 +68,7 @@ fun IncomeTrackerScreen(token: String) {
     val balance : List<BalanceResponse> = vm2.balance
     val data = vm.coaList
     val coaList : List<COAItem> = vm.coatransList
+    var showBalance by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -192,12 +198,35 @@ fun IncomeTrackerScreen(token: String) {
         Spacer(modifier = Modifier.height(2.dp))
 
         val balanceValue = balance.firstOrNull()?.Balance?: 0.0
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = if (showBalance)
+                    "Balance : Rp ${"%,.2f".format(balanceValue)}"
+                else
+                    "Balance : *****",
+                color = if (showBalance) Color.Green else Color.Unspecified,
+                style = MaterialTheme.typography.headlineSmall
+            )
 
-        Text(
-            text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
-            color = Color.Green,
-            style = MaterialTheme.typography.headlineMedium
-        )
+            IconButton(onClick = { showBalance = !showBalance }) {
+                Icon(
+                    imageVector = if (showBalance) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    contentDescription = if (showBalance) "Sembunyikan" else "Tampilkan"
+                )
+            }
+        }
+
+//        Text(
+//            text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
+//            color = Color.Green,
+//            style = MaterialTheme.typography.headlineMedium
+//        )
 //        // Balance
 //        Text(
 //            text = "Balance: Rp ${"%,.2f".format(balance)}",

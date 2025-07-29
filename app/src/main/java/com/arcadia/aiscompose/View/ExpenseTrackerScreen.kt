@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import com.arcadia.aiscompose.Model.COAItem
 import java.util.TimeZone
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 
 @Composable
 fun ExpenseTrackerScreen(token: String) {
@@ -74,7 +76,7 @@ fun ExpenseTrackerScreen(token: String) {
     //val transactionList by vm2.transactionList.collectAsState()
     val transactionList : List<TransactionView> = vm2.transactionList
     val coaList : List<COAItem> = vm.coatransList
-
+    var showBalance by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -200,13 +202,39 @@ fun ExpenseTrackerScreen(token: String) {
 
         Spacer(modifier = Modifier.height(1.dp))
 
-        val balanceValue = balance.firstOrNull()?.Balance ?: 0.0
 
-        Text(
-            text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
-            color = Color.Green,
-            style = MaterialTheme.typography.headlineSmall
-        )
+        val balanceValue = balance.firstOrNull()?.Balance ?: 0.0
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = if (showBalance)
+                    "Balance : Rp ${"%,.2f".format(balanceValue)}"
+                else
+                    "Balance : *****",
+                color = if (showBalance) Color.Green else Color.Unspecified,
+                style = MaterialTheme.typography.headlineSmall
+            )
+
+            IconButton(onClick = { showBalance = !showBalance }) {
+                Icon(
+                    imageVector = if (showBalance) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    contentDescription = if (showBalance) "Sembunyikan" else "Tampilkan"
+                )
+            }
+        }
+
+//        if (showBalance) {
+//            Text(
+//                text = "Balance: Rp ${"%,.2f".format(balanceValue)}",
+//                color = Color.Green,
+//                style = MaterialTheme.typography.headlineSmall
+//            )
+//        }
 //        // Balance
 //        Text(
 //            text = "Balance: Rp ${"%,.2f".format(balance)}",
