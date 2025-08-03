@@ -12,6 +12,7 @@ import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.LogoutRequest
+import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Model.PriorityItem
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.Transaction
@@ -34,6 +35,7 @@ object TransactionRepository {
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://8.222.205.20:3000/") // ganti dengan URL kamu
             .baseUrl("https://tosft.my.id/") // ganti dengan URL kamu
+            //.addInterceptor(AuthInterceptor(tokenState, onLogout))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -59,6 +61,10 @@ object TransactionRepository {
 
     suspend fun getCreditCard(token: String): List<CreditCardItem> {
         return api.getCreditCard("Bearer $token")
+    }
+
+    suspend fun getMaintenance(token: String): List<MaintenanceItem> {
+        return api.getMaintenance("Bearer $token")
     }
 
     suspend fun getPriorityReport(token: String): List<PriorityItem> {
@@ -91,6 +97,10 @@ object TransactionRepository {
 
     suspend fun getExpenseReport(token: String):List<Expense> {
         return api.getExpenseReport("Bearer $token")
+    }
+
+    suspend fun getIncomeReport(token: String):List<Expense> {
+        return api.getIncomeReport("Bearer $token")
     }
 
     suspend fun submitExpenses(token: String, type: String, expense: Transaction) {

@@ -45,7 +45,7 @@ fun ChangePasswordScreen(
     LaunchedEffect(Unit) {
         viewModel.setToken(token)
     }
-
+    Log.d("ChangePass",shouldLogout.toString())
     // 🔄 Pantau apakah sudah waktunya logout
     LaunchedEffect(shouldLogout) {
         if (shouldLogout) {
@@ -69,8 +69,8 @@ fun ChangePasswordScreen(
 
         Log.d("ChangePassword", "Error : ${errorMessage}")
 
-        if (localErrorMessage != null && showError) {
-            Text(localErrorMessage!!, color = Color.Red)
+        if ((localErrorMessage != null && showError)|| !errorMessage.isNullOrEmpty()) {
+            Text(text = localErrorMessage ?: errorMessage.orEmpty(), color = Color.Red)
         }
 
         val message = successMessage

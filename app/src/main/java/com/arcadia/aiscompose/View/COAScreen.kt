@@ -21,14 +21,17 @@ fun COAScreen(token: String) {
     val factory = remember { TransactionViewModelFactory(token) }
     val vm2: TransactionViewModel = viewModel(factory = factory)
 
-    LaunchedEffect(token) {
-        vm2.setToken(token)
-        vm2.fetchCOAAccess()
-    }
-
     val originalItems by vm2.coaaccessList.collectAsState()
     //var coaItems by remember { mutableStateOf<List<COAAccess>>(emptyList()) }
     var coaItems by remember(originalItems) { mutableStateOf(originalItems) }
+
+    LaunchedEffect(token) {
+
+        // Clear existing list to avoid cache
+        coaItems = emptyList()
+        vm2.setToken(token)
+        vm2.fetchCOAAccess()
+    }
 
     LaunchedEffect(originalItems) {
         if (coaItems.isEmpty()) {
@@ -107,6 +110,7 @@ fun COACheckboxGroupedList(
             }
 
             items(sortedGroup) { item ->// use sortedGroup here
+                //var editedLabel by remember { mutableStateOf(item.combined_label) }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -124,6 +128,18 @@ fun COACheckboxGroupedList(
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
+//                    OutlinedTextField(
+//                        value = editedLabel,
+//                        onValueChange = { newText ->
+//                            editedLabel = newText
+//                            onCheckedChange(item.copy(combined_label = newText))
+//                        },
+//                        modifier = Modifier
+//                            .weight(1f)
+//                            .padding(start = 8.dp),
+//                        textStyle = MaterialTheme.typography.bodyLarge,
+//                        singleLine = true
+//                    )
                 }
             }
 

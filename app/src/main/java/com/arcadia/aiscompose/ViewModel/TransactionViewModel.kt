@@ -29,6 +29,7 @@ import com.arcadia.aiscompose.Repository.WaterRepository
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.livedata.observeAsState
 import com.arcadia.aiscompose.Model.CoaUserPostDTO
+import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Model.PriorityItem
 
 class TransactionViewModel  : ViewModel() {
@@ -79,6 +80,9 @@ class TransactionViewModel  : ViewModel() {
     private val _creditcardList = mutableStateListOf<CreditCardItem>()
     val creditcardList: List<CreditCardItem> get() = _creditcardList
 
+    private val _maintenanceList = mutableStateListOf<MaintenanceItem>()
+    val maintenanceList: List<MaintenanceItem> get() = _maintenanceList
+
     private val _priorityList = mutableStateListOf<PriorityItem>()
     val priorityList: List<PriorityItem> get() = _priorityList
 
@@ -97,6 +101,8 @@ class TransactionViewModel  : ViewModel() {
     private val _expenseList = mutableStateListOf<Expense>()
     val expenseList: List<Expense> get() = _expenseList
 
+    private val _incomeList = mutableStateListOf<Expense>()
+    val incomeList: List<Expense> get() = _incomeList
 
     private val _transferResult = MutableStateFlow<List<TransferResponse?>>(emptyList())
     val transferResult: StateFlow<List<TransferResponse?>> = _transferResult
@@ -180,6 +186,22 @@ class TransactionViewModel  : ViewModel() {
         }
     }
 
+    fun fetchMaintenance() {
+        viewModelScope.launch {
+            try {
+//                val data = api.getCreditCard()
+//                _creditcardList.value = data
+
+                val data = TransactionRepository.getMaintenance(token.value)
+                _maintenanceList.clear()          // 🔴 Hapus data lama
+                _maintenanceList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun fetchInsurance() {
         viewModelScope.launch {
             try {
@@ -238,6 +260,22 @@ class TransactionViewModel  : ViewModel() {
         }
     }
 
+    fun fetchIncomeReport() {
+        viewModelScope.launch {
+            try {
+//                val data = api.getExpenseReport()
+//                //val filteredData = data.filter { it.coa_name == "Beban Bensin" }
+//                //Log.d("ExpenseChartView", "Expenses size: ${filteredData.size}")
+//                _expenseList.value = data
+                val data = TransactionRepository.getIncomeReport(token.value)
+                _incomeList.clear()          // 🔴 Hapus data lama
+                _incomeList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun fetchDailyExpense() {
         viewModelScope.launch {

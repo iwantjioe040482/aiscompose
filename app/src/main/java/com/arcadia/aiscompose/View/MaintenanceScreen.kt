@@ -1,0 +1,103 @@
+package com.arcadia.aiscompose.View
+
+import com.arcadia.aiscompose.ViewModel.TransactionViewModel
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.padding
+import com.arcadia.aiscompose.Model.MaintenanceItem
+import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
+import kotlinx.coroutines.delay
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+
+
+@Composable
+fun MaintenanceScreen(token: String) {
+    var showProgress by remember { mutableStateOf(true) }
+    var showNoDataDialog by remember { mutableStateOf(false) }
+//    viewModel: TransactionViewModel = viewModel()
+//    val data by viewModel.creditcardList.collectAsState()
+//
+//    LaunchedEffect(true) {
+//        viewModel.fetchCreditCard()
+//    }
+
+    val factory = remember { TransactionViewModelFactory(token) }
+    val vm2 : TransactionViewModel = viewModel(factory = factory)
+
+    LaunchedEffect(token) {
+        vm2.setToken(token)
+        vm2.fetchMaintenance()
+    }
+
+
+    val data : List<MaintenanceItem> = vm2.maintenanceList
+
+    // Jalankan delay 3 detik jika data kosong
+    LaunchedEffect(key1 = data) {
+        delay(3000L) // 3 detik
+        if (data.isEmpty()) {
+            showProgress = false
+            showNoDataDialog = true
+        }
+    }
+
+    // Tampilkan layar hanya jika data sudah diisi
+    if (data.isNotEmpty()) {
+
+        Column(modifier = Modifier
+            .padding(8.dp)) {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            LazyColumn {
+                items(data) { item: MaintenanceItem ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .padding(16.dp)
+                    ) {
+                        MaintenanceChartView(data = listOf(item)) // 👈 satu chart per item
+                    }
+                }
+            }
+        }
+    } else if (showProgress) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    }
+
+    // Dialog pop-up jika tidak ada data setelah 3 detik
+    if (showNoDataDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoDataDialog = false
+                showProgress = false // 👈 tambahkan ini
+            },
+            confirmButton = {
+                TextButton(onClick = { showNoDataDialog = false
+                    showProgress = false // 👈 tambahkan ini
+                }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Tidak Ada Data") },
+            text = { Text("Data tidak ditemukan atau masih kosong.") }
+        )
+    }
+}
+
+

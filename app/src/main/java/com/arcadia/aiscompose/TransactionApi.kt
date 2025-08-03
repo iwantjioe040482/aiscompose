@@ -13,6 +13,7 @@ import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
+import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Model.PriorityItem
 import com.arcadia.aiscompose.Model.TransactionWithType
 import com.arcadia.aiscompose.Model.TransferRequest
@@ -33,6 +34,9 @@ interface TransactionApi {
 
     @GET("creditcard")
     suspend fun getCreditCard(@Header("Authorization") token: String): List<CreditCardItem>
+
+    @GET("maintenance")
+    suspend fun getMaintenance(@Header("Authorization") token: String): List<MaintenanceItem>
 
     @GET("priorityreport")
     suspend fun getPriorityReport(@Header("Authorization") token: String): List<PriorityItem>
@@ -61,6 +65,9 @@ interface TransactionApi {
 
     @GET("monthlyexpense")
     suspend fun getExpenseReport(@Header("Authorization") token: String): List<Expense>
+
+    @GET("monthlyincomes")
+    suspend fun getIncomeReport(@Header("Authorization") token: String): List<Expense>
 
     @GET("balance/{coaId}")
     suspend fun getBalanceByCOA(@Header("Authorization") token: String,@Path("coaId") id: String) : List<BalanceResponse>

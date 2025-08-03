@@ -66,13 +66,24 @@ class  ChangePasswordViewModel : ViewModel() {
                 {
                     successMessage.value = "Password changed successfully"
                     errorMessage.value = null
+                    _shouldLogout.value = true // ✅ hanya kalau sukses, logout paksa
                     triggerLogout()
                 }
                 else
                 {
-                    errorMessage.value = "Password lama tidak cocok"
+                    if (response.code() == 401) {
+                        // 401 bisa juga berarti token expired → logout
+                        _shouldLogout.value = true
+                        errorMessage.value = "Session expired. Please login again."
+                    } else if (response.code() == 400) {
+                        // 400 = salah input dari user → TAMPILKAN error, JANGAN logout
+                        errorMessage.value = "Password lama tidak cocok"
+                    } else {
+                        // Tampilkan error dari API jika ada
+                        errorMessage.value = "Terjadi kesalahan. Kode: ${response.code()}"
+                    }
                     successMessage.value = null
-                    return@launch
+                    //return@launch
                 }
             } catch (e: Exception) {
                 errorMessage.value = "Failed: ${e.message}"
