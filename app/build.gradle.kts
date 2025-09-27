@@ -49,8 +49,10 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.6.7") // <-- WAJIB untuk layout
     implementation("androidx.compose.ui:ui:1.6.7")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
     implementation("androidx.compose.ui:ui-text:1.6.7")
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.7")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.compose.ui:ui-text:1.6.7")
     implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.7")
@@ -66,6 +68,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.0") // Versi sesuaikan
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -67,6 +67,10 @@ object TransactionRepository {
         return api.getMaintenance("Bearer $token")
     }
 
+    suspend fun getGroupExpense(token: String): List<Expense> {
+        return api.getGroupExpense("Bearer $token")
+    }
+
     suspend fun getPriorityReport(token: String): List<PriorityItem> {
         return api.getPriorityReport("Bearer $token")
     }

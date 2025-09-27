@@ -20,6 +20,7 @@ class SidebarViewModel : ViewModel() {
             _menuItems.value =
                 listOf(
                     MenuItem(route = "Home", label = "Home", id = "Home"),
+                    MenuItem(route = "Chat", label = "Chat", id = "Chat"),
                     MenuItem(route = "WaterInput", label = "Water", id = "WaterInput"),
                     MenuItem(route = "ElectricityInput", label = "Electricity", id = "ElectricityInput"),
                     MenuItem(route = "Transaction", label = "Expense", id = "Transaction"),
@@ -33,10 +34,19 @@ class SidebarViewModel : ViewModel() {
                         id = "Report",
                         children = listOf(
                             MenuItem(route = "Daily", label = "Expense Daily", id = "Daily"),
-                            MenuItem(route = "Pivot", label = "Expense Monthly Pivot", id = "Pivot"),
-                            MenuItem(route = "Expense", label = "Expense Monthly", id = "Expense"),
-                            MenuItem(route = "ExpensePriority", label = "Expense Priority Monthly", id = "ExpensePriority"),
-                            MenuItem(route = "Income", label = "Income Monthly", id = "Income"),
+                            MenuItem(
+                                label = "Monthly",
+                                id = "MonthlyReport",
+                                children = listOf(
+                                    MenuItem(route = "Cashflow", label = "CashFlow Pivot", id = "Cashflow"),
+                                    MenuItem(route = "Pivot", label = "Expense Monthly Pivot", id = "Pivot"),
+                                    MenuItem(route = "Expense", label = "Expense Monthly", id = "Expense"),
+                                    MenuItem(route = "ExpensePriority", label = "Expense Priority Monthly", id = "ExpensePriority"),
+                                    MenuItem(route = "GroupExpense", label = "Group Expense Monthly", id = "GroupExpense"),
+                                    MenuItem(route = "IncomePivot", label = "Income Monthly Pivot", id = "IncomePivot"),
+                                    MenuItem(route = "Income", label = "Income Monthly", id = "Income"),
+                                )
+                            ),
                             MenuItem(route = "Tax", label = "Tax", id = "Tax"),
                             MenuItem(route = "CreditCard", label = "Credit Card", id = "CreditCard"),
                             MenuItem(route = "Insurance", label = "Insurance", id = "Insurance"),

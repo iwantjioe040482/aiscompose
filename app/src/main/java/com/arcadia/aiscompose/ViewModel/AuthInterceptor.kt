@@ -16,7 +16,7 @@ class AuthInterceptor(
 
         val response = chain.proceed(request)
 
-        if (response.code() == 401) {
+        if (response.code == 401) {
             // Token expired
             tokenState.value = null
             onLogout()

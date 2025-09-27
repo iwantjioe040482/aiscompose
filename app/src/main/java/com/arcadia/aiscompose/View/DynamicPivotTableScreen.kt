@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DynamicPivotTableScreen(data: List<DynamicPivot>) {
-    val scrollState = rememberScrollState()
     val options = listOf("normal", "kilo", "mio")
     var selectedUnit by remember { mutableStateOf("normal") }
     var expanded by remember { mutableStateOf(false) }
@@ -32,112 +31,150 @@ fun DynamicPivotTableScreen(data: List<DynamicPivot>) {
             .sortedWith(compareBy { monthOrder.indexOf(it) })
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                //.horizontalScroll(scrollState)
-        ) {
-            Column {
-                Spacer(modifier = Modifier.height(32.dp))
-                // Debug line
-                Text("Data size: ${data.size}", style = MaterialTheme.typography.labelSmall)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded }
-                    ) {
-                        TextField(
-                            value = selectedUnit,
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text("View In") },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                            modifier = Modifier.menuAnchor()
-                        )
+    // Hitung total per bulan
+    val totals = remember(data) {
+        allMonths.associateWith { month ->
+            data.sumOf { it.values[month]?.toDouble() ?: 0.0 }.toFloat()
+        }
+    }
 
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            options.forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(option) },
-                                    onClick = {
-                                        selectedUnit = option
-                                        expanded = false
-                                    }
-                                )
-                            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text("Data size: ${data.size}", style = MaterialTheme.typography.labelSmall)
+
+            // Dropdown pilihan unit
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    TextField(
+                        value = selectedUnit,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("View In") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        options.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    selectedUnit = option
+                                    expanded = false
+                                }
+                            )
                         }
                     }
                 }
-                // Header
-                Row(
+            }
+
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Kategori",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                        .weight(1f)
+                        .padding(end = 4.dp),
+                    style = MaterialTheme.typography.labelLarge
+                )
+                allMonths.forEach { month ->
                     Text(
-                        "Kategori",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 4.dp),
+                        month.uppercase(),
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.End,
                         style = MaterialTheme.typography.labelLarge
                     )
-                    allMonths.forEach { month ->
+                }
+            }
+
+            Divider()
+
+            LazyColumn {
+                items(data.size) { index ->
+                    val row = data[index]
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            month.uppercase(),
+                            row.coaName,
                             modifier = Modifier
-                                .weight(1f),
-                            textAlign = TextAlign.End,
-                            style = MaterialTheme.typography.labelLarge
+                                .weight(1f)
+                                .padding(end = 4.dp),
+                            style = MaterialTheme.typography.bodyMedium
                         )
+                        allMonths.forEach { month ->
+                            val value = row.values[month] ?: 0f
+                            val displayValue = when (selectedUnit) {
+                                "kilo" -> value / 1_000f
+                                "mio" -> value / 1_000_000f
+                                else -> value
+                            }
+                            Text(
+                                text = "%,.2f".format(displayValue),
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.End,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontFamily = FontFamily.Monospace
+                                )
+                            )
+                        }
                     }
                 }
 
-                Divider()
-
-                LazyColumn {
-                    items(data.size) { index ->
-                        val row = data[index]
-                        Row(
+                // Tambah row TOTAL di bawah
+                item {
+                    Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "TOTAL",
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 2.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                row.coaName,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 4.dp),
-                                style = MaterialTheme.typography.bodyMedium
+                                .weight(1f)
+                                .padding(end = 4.dp),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontFamily = FontFamily.Monospace
                             )
-                            allMonths.forEach { month ->
-                                val value = row.values[month] ?: 0f
-                                val displayValue = when (selectedUnit) {
-                                    "kilo" -> value / 1_000f
-                                    "mio" -> value / 1_000_000f
-                                    else -> value
-                                }
-                                Text(
-                                    text = "%,.2f".format(displayValue),
-                                    //text = "%,.2f".format(value),
-                                    modifier = Modifier.weight(1f),
-                                    textAlign = TextAlign.End,
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontFamily = FontFamily.Monospace
-                                    )
-                                )
+                        )
+                        allMonths.forEach { month ->
+                            val rawTotal = totals[month] ?: 0f
+                            val displayTotal = when (selectedUnit) {
+                                "kilo" -> rawTotal / 1_000f
+                                "mio" -> rawTotal / 1_000_000f
+                                else -> rawTotal
                             }
+                            Text(
+                                text = "%,.2f".format(displayTotal),
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.End,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontFamily = FontFamily.Monospace
+                                )
+                            )
                         }
                     }
                 }

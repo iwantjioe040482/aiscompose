@@ -11,10 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.arcadia.aiscompose.Model.DynamicPivot
-import com.arcadia.aiscompose.Model.TransactionView
 import com.arcadia.aiscompose.Repository.PivotMonthlyRepository
-import com.arcadia.aiscompose.Repository.PivotMonthlyViewModelFactory
-import com.arcadia.aiscompose.Repository.TransactionRepository
 import kotlinx.coroutines.flow.asStateFlow
 
 class PivotMonthlyViewModel() : ViewModel(){
@@ -25,12 +22,18 @@ class PivotMonthlyViewModel() : ViewModel(){
 //    val dynamiclist=MutableStateFlow<List<DynamicPivot>>(emptyList())
 
     val pivotList = mutableStateListOf<List<MonthlyPivot>>()
+    val pivotincomeList = mutableStateListOf<List<MonthlyPivot>>()
     //val pivotList = mutableStateListOf<List<MonthlyPivot>>(emptyList())
     //val dynamiclist=mutableStateListOf<DynamicPivot>()
 
     private val _dynamiclist = mutableStateListOf<DynamicPivot>()
     val dynamiclist: List<DynamicPivot> get() = _dynamiclist
 
+    private val _dynamicincomelist = mutableStateListOf<DynamicPivot>()
+    val dynamicincomelist: List<DynamicPivot> get() = _dynamicincomelist
+
+    private val _dynamiccashflowlist = mutableStateListOf<DynamicPivot>()
+    val dynamiccashflowlist: List<DynamicPivot> get() = _dynamiccashflowlist
 
     private val api: TransactionApi
 
@@ -104,6 +107,27 @@ class PivotMonthlyViewModel() : ViewModel(){
         }
     }
 
+    fun fetchCashFlow() {
+        viewModelScope.launch {
+//            val response = api.getPivot() // ambil dari API/Room
+//            val parsedList = parseJsonToPivot(response)
+//            dynamiclist.value= parsedList
+            Log.d("CashflowReport", "token: ${token.value}")
+
+            val data = PivotMonthlyRepository.getCashFlow(token.value)
+            Log.d("CashflowReport", "data size: ${data.size}")
+            val parsedList = parseJsonToPivot(data)
+            Log.d("CashflowReport", "parsedList size: ${parsedList.size}")
+
+            _dynamiccashflowlist.clear()          // 🔴 Hapus data lama
+            _dynamiccashflowlist.addAll (parsedList)
+
+            pivotList.clear()
+            pivotList.add(data)
+            //pivotList.value = response
+        }
+    }
+
     fun fetchPivot() {
         viewModelScope.launch {
 //            val response = api.getPivot() // ambil dari API/Room
@@ -118,6 +142,26 @@ class PivotMonthlyViewModel() : ViewModel(){
 
             _dynamiclist.clear()          // 🔴 Hapus data lama
             _dynamiclist.addAll (parsedList)
+
+            pivotList.clear()
+            pivotList.add(data)
+            //pivotList.value = response
+        }
+    }
+    fun fetchIncomePivot() {
+        viewModelScope.launch {
+//            val response = api.getPivot() // ambil dari API/Room
+//            val parsedList = parseJsonToPivot(response)
+//            dynamiclist.value= parsedList
+            Log.d("PivotReport", "token: ${token.value}")
+
+            val data = PivotMonthlyRepository.getIncomePivot(token.value)
+            Log.d("PivotReport", "data size: ${data.size}")
+            val parsedList = parseJsonToPivot(data)
+            Log.d("PivotReport", "parsedList size: ${parsedList.size}")
+
+            _dynamicincomelist.clear()          // 🔴 Hapus data lama
+            _dynamicincomelist.addAll (parsedList)
 
             pivotList.clear()
             pivotList.add(data)

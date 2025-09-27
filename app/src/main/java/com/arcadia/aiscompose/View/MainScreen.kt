@@ -29,13 +29,53 @@ import kotlinx.coroutines.launch
 import android.net.Uri
 import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
-
+import com.arcadia.aiscompose.ViewModel.LocationViewModel
+import com.google.accompanist.permissions.*
+import android.Manifest
 //import androidx.compose.ui.graphics.Color
+import android.location.LocationManager
+import android.provider.Settings
+import com.google.accompanist.permissions.*
+import android.content.Context
+import kotlinx.coroutines.delay
+import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+// helper untuk cek expired
+fun isTokenExpired(token: String?): Boolean {
+    if (token.isNullOrBlank()) return true
+    try {
+        // Misal JWT (token dibagi 3 bagian)
+        val parts = token.split(".")
+        if (parts.size != 3) return false
+        val payload = android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE)
+        val payloadStr = String(payload, Charsets.UTF_8)
+
+        // Cari field exp
+        val regex = """"exp":(\d+)""".toRegex()
+        val match = regex.find(payloadStr) ?: return false
+        val exp = match.groupValues[1].toLong()
+
+        val now = System.currentTimeMillis() / 1000
+        return now >= exp
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return false
+    }
+}
+// Helper cek GPS
+fun isLocationEnabled(context: Context): Boolean {
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewModel: SidebarViewModel = viewModel()) {
 
+    val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val token = tokenState.value ?: return // Jangan render apapun jika token null (sudah logout)
     Log.d("AssetViewModel", "Calling mainscreen with token: $token")
 
@@ -76,9 +116,55 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
             val scrollState = rememberScrollState()
     val viewModel3: LoginViewModel = viewModel()
     val viewModel2: ChangePasswordViewModel = viewModel()
+    val locvm: LocationViewModel=viewModel()
     val error = viewModel2.errorMessage.value
     val success = viewModel2.successMessage.value
     val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+    val locationPermission = rememberPermissionState(
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    LaunchedEffect(token)
+    {
+        while (true) {
+            delay(30_000) // cek setiap 30 detik
+            if (isTokenExpired(tokenState.value)) {
+                tokenState.value = null
+                onLogout()
+                break
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (!locationPermission.status.isGranted) {
+            locationPermission.launchPermissionRequest()
+        } else {
+            if (!isLocationEnabled(context)) {
+                // GPS off → buka settings
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                context.startActivity(intent)
+                locvm.getLocationAndSend(token)
+            } else {
+                // GPS on + permission granted → ambil lokasi
+                locvm.getLocationAndSend(token)
+            }
+        }
+    }
+//    else {
+//        LaunchedEffect(Unit) {
+//            locvm.getLocationAndSend(token)
+//        }
+//    }
+//
+//    LaunchedEffect(Unit) {
+//        if (!locationPermission.status.isGranted) {
+//            locationPermission.launchPermissionRequest()
+//        } else {
+//            locvm.getLocationAndSend(token)
+//        }
+//    }
 
             ModalNavigationDrawer(
                 drawerState = drawerState,
@@ -148,17 +234,21 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                 } else {
                     when (selectedItem?.route) {
                         "Home" -> HomeScreen(token)
+                        "Chat" -> ChatScreen()
                         "WaterInput" -> WaterInputScreen(token)
                         "ElectricityInput" -> ElectricityInputScreen(token)
                         "Transaction" -> ExpenseTrackerScreen(token)
                         "Incomes" -> IncomeTrackerScreen(token)
                         "Transfer" -> TransferInputForm(token)
+                        "Cashflow" -> CashflowReportScreen(token)
                         "Pivot" -> PivotReportScreen(token)
+                        "IncomePivot" -> IncomePivotReportScreen(token)
                         "Tax" -> TaxScreen(token)
                         "CreditCard" -> CreditCardScreen(token)
                         "Maintenance" -> MaintenanceScreen(token)
                         "Insurance" -> InsuranceScreen(token)
                         "Expense" -> ExpenseScreen(token)
+                        "GroupExpense" -> GroupExpenseScreen(token)
                         "Income" -> IncomeScreen(token)
                         "ExpensePriority" -> ExpensePriorityScreen(token)
                         "Daily" -> DailyExpenseScreen(token)
@@ -174,10 +264,10 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                                 onLogout()
                             },
                             onLogout = {
-//                                coroutineScope.launch {
-//                                    LoginViewModel().logout(token)
-//                                    tokenState.value = null // 🔥 Token dihapus
-//                                }
+                                coroutineScope.launch {
+                                    LoginViewModel().logout(token)
+                                    tokenState.value = null // 🔥 Token dihapus
+                                }
                             },
                                     //viewModel3.logout(token)
 //                                // Tambahkan aksi logout di sini, misalnya hapus token, pindah ke login screen, dll.
