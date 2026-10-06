@@ -44,7 +44,7 @@ fun MaintenanceChartView(data: List<MaintenanceItem>
                 PieEntry(remaining, "Remaining ${item.legend_uom}")
             )
 
-            val dataSet = PieDataSet(entries, item.maintenance_name)
+            val dataSet = PieDataSet(entries, item.maintenance_name+item.asset_name)
             dataSet.colors = listOf(
                 AndroidColor.rgb(244, 67, 54),   // Merah
                 AndroidColor.rgb(33, 150, 243),  // Biru

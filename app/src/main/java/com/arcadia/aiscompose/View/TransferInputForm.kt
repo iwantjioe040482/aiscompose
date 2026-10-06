@@ -20,6 +20,10 @@ import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import com.arcadia.aiscompose.ViewModel.COAIncomeViewModel
 import com.arcadia.aiscompose.ViewModel.ElectricityViewModel
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.PaddingValues
 //import androidx.compose.ui.text.input.KeyboardOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,39 +59,51 @@ fun TransferInputForm(token: String) {
     val coaList : List<COAItem> = vm.coatransList
     //val coaListto : List<COAItem> = vm.coatransList
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding(),
+        contentPadding = PaddingValues(
+            start = 16.dp,
+            end = 16.dp,
+            top = 96.dp,   // pindahkan ke sini
+            bottom = 80.dp
+        )
+        , verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
-        // Source Dropdown
-        ExposedDropdownMenuBox(
-            expanded = expandedSource,
-            onExpandedChange = { expandedSource = !expandedSource }
-        ) {
-            OutlinedTextField(
-                readOnly = true,
-                value = source,
-                onValueChange = {},
-                label = { Text("Dari") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSource) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
-            )
 
-            ExposedDropdownMenu(
+        item {
+            Spacer(modifier = Modifier.height(48.dp))
+        }
+
+        item {
+            // Source Dropdown
+            ExposedDropdownMenuBox(
                 expanded = expandedSource,
-                onDismissRequest = { expandedSource = false }
+                onExpandedChange = { expandedSource = !expandedSource }
             ) {
-                coaList.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(item.coa_name) },
-                        onClick = {
-                            source = item.route_name  // Simpan value (route_name)
-                            expandedSource = false
-                        }
-                    )
-                }
+                OutlinedTextField(
+                    readOnly = true,
+                    value = source,
+                    onValueChange = {},
+                    label = { Text("Dari") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSource) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expandedSource,
+                    onDismissRequest = { expandedSource = false }
+                ) {
+                    coaList.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(item.coa_name) },
+                            onClick = {
+                                source = item.route_name  // Simpan value (route_name)
+                                expandedSource = false
+                            }
+                        )
+                    }
 //                paymentOptions.forEach {
 //                    DropdownMenuItem(
 //                        text = { Text(it) },
@@ -97,36 +113,38 @@ fun TransferInputForm(token: String) {
 //                        }
 //                    )
 //                }
+                }
             }
         }
 
-        // Destination Dropdown
-        ExposedDropdownMenuBox(
-            expanded = expandedDestination,
-            onExpandedChange = { expandedDestination = !expandedDestination }
-        ) {
-            OutlinedTextField(
-                readOnly = true,
-                value = destination,
-                onValueChange = {},
-                label = { Text("Ke") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDestination) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
-            )
+         item {
+             // Destination Dropdown
+             ExposedDropdownMenuBox(
+                 expanded = expandedDestination,
+                 onExpandedChange = { expandedDestination = !expandedDestination }
+             ) {
+                 OutlinedTextField(
+                     readOnly = true,
+                     value = destination,
+                     onValueChange = {},
+                     label = { Text("Ke") },
+                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDestination) },
+                     modifier = Modifier.menuAnchor().fillMaxWidth()
+                 )
 
-            ExposedDropdownMenu(
-                expanded = expandedDestination,
-                onDismissRequest = { expandedDestination = false }
-            ) {
-                coaList.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(item.coa_name) },
-                        onClick = {
-                            destination = item.route_name  // Simpan value (route_name)
-                            expandedDestination = false
-                        }
-                    )
-                }
+                 ExposedDropdownMenu(
+                     expanded = expandedDestination,
+                     onDismissRequest = { expandedDestination = false }
+                 ) {
+                     coaList.forEach { item ->
+                         DropdownMenuItem(
+                             text = { Text(item.coa_name) },
+                             onClick = {
+                                 destination = item.route_name  // Simpan value (route_name)
+                                 expandedDestination = false
+                             }
+                         )
+                     }
 //                paymentOptions.forEach {
 //                    DropdownMenuItem(
 //                        text = { Text(it) },
@@ -136,23 +154,27 @@ fun TransferInputForm(token: String) {
 //                        }
 //                    )
 //                }
-            }
+                 }
+             }
+         }
+
+        item {
+            // Amount Input
+            OutlinedTextField(
+                value = amountText,
+                onValueChange = { amountText = it },
+                label = { Text("Jumlah") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                //keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
         }
 
-        // Amount Input
-        OutlinedTextField(
-            value = amountText,
-            onValueChange = { amountText = it },
-            label = { Text("Jumlah") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            //keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
-
-        // Submit Button
-        Button(
-            onClick = {
-                vm2.submitTransfer(source ,destination , amountText.toDoubleOrNull() ?: 0.0)
+        item {
+            // Submit Button
+            Button(
+                onClick = {
+                    vm2.submitTransfer(source, destination, amountText.toDoubleOrNull() ?: 0.0)
 //                isSending = true
 //                result = null
 //                val transferRequest = TransferRequest(from, to, amount.toIntOrNull() ?: 0)
@@ -172,23 +194,25 @@ fun TransferInputForm(token: String) {
 //                        }
 //                    }
 //                }
-            },
-            //enabled = !isSending,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Submit")
+                },
+                //enabled = !isSending,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Submit")
+            }
+
         }
+        item {
+            Column(modifier = Modifier.padding(16.dp)) {
+                // Form submit transfer (dari sebelumnya)
 
-
-        Column(modifier = Modifier.padding(16.dp)) {
-            // Form submit transfer (dari sebelumnya)
-
-            transferResult.firstOrNull()?.let { result ->
-                Spacer(modifier = Modifier.height(16.dp))
-                Text("Message: ${result.message}")
-                Text("From: ${result.data.from}")
-                Text("To: ${result.data.to}")
-                Text("Amount: ${result.data.amount}")
+                transferResult.firstOrNull()?.let { result ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Message: ${result.message}")
+                    Text("From: ${result.data.from}")
+                    Text("To: ${result.data.to}")
+                    Text("Amount: ${result.data.amount}")
+                }
             }
         }
     }

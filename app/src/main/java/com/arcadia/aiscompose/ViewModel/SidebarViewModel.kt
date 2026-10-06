@@ -47,6 +47,7 @@ class SidebarViewModel : ViewModel() {
                                     MenuItem(route = "Income", label = "Income Monthly", id = "Income"),
                                 )
                             ),
+                            MenuItem(route = "COA", label = "Chart Of Account", id = "COA"),
                             MenuItem(route = "Tax", label = "Tax", id = "Tax"),
                             MenuItem(route = "CreditCard", label = "Credit Card", id = "CreditCard"),
                             MenuItem(route = "Insurance", label = "Insurance", id = "Insurance"),

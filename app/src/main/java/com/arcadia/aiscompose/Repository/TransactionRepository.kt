@@ -10,6 +10,7 @@ import com.arcadia.aiscompose.Model.CoaUserPostDTO
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
+import com.arcadia.aiscompose.Model.Income
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.LogoutRequest
 import com.arcadia.aiscompose.Model.MaintenanceItem
@@ -103,7 +104,7 @@ object TransactionRepository {
         return api.getExpenseReport("Bearer $token")
     }
 
-    suspend fun getIncomeReport(token: String):List<Expense> {
+    suspend fun getIncomeReport(token: String):List<Income> {
         return api.getIncomeReport("Bearer $token")
     }
 

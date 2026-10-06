@@ -238,6 +238,7 @@ fun MainScreen(tokenState: MutableState<String?>,  onLogout: () -> Unit,viewMode
                         "WaterInput" -> WaterInputScreen(token)
                         "ElectricityInput" -> ElectricityInputScreen(token)
                         "Transaction" -> ExpenseTrackerScreen(token)
+                        "COA" ->COATrackerScreen(token)
                         "Incomes" -> IncomeTrackerScreen(token)
                         "Transfer" -> TransferInputForm(token)
                         "Cashflow" -> CashflowReportScreen(token)

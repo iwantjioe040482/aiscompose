@@ -12,6 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.arcadia.aiscompose.TransactionApi
 import kotlinx.coroutines.flow.asStateFlow
+import android.util.Log
 
 class COAViewModel  : ViewModel() {
     private val _token = MutableStateFlow("")
@@ -60,10 +61,12 @@ class COAViewModel  : ViewModel() {
         viewModelScope.launch {
             try {
                 val data = TransactionRepository.getCOATrans(token.value)
+                Log.d("COA_TRANS", "size=${data.size}, names=${data.map { it.coa_name }}")
                 _coatransList.clear()          // 🔴 Hapus data lama
                 _coatransList.addAll (data)
 
             } catch (e: Exception) {
+                Log.e("COA_TRANS", "error", e)
                 e.printStackTrace()
             }
         }

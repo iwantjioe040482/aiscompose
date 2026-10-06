@@ -33,7 +33,8 @@ fun COADropdownMenu(
             }
         )
 
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false },
+            modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing)) {
             coaList.forEach { coa ->
                 DropdownMenuItem(
                     text = { Text(coa.coa_name) },

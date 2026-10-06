@@ -29,6 +29,7 @@ import com.arcadia.aiscompose.Repository.WaterRepository
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.livedata.observeAsState
 import com.arcadia.aiscompose.Model.CoaUserPostDTO
+import com.arcadia.aiscompose.Model.Income
 import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Model.PriorityItem
 
@@ -104,8 +105,8 @@ class TransactionViewModel  : ViewModel() {
     private val _groupexpenseList = mutableStateListOf<Expense>()
     val groupexpenseList: List<Expense> get() = _groupexpenseList
 
-    private val _incomeList = mutableStateListOf<Expense>()
-    val incomeList: List<Expense> get() = _incomeList
+    private val _incomeList = mutableStateListOf<Income>()
+    val incomeList: List<Income> get() = _incomeList
 
     private val _transferResult = MutableStateFlow<List<TransferResponse?>>(emptyList())
     val transferResult: StateFlow<List<TransferResponse?>> = _transferResult

@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.padding
 import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
+import com.arcadia.aiscompose.Model.Income
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 
 @Composable
@@ -40,7 +41,7 @@ fun IncomeScreen(token: String) {
         vm2.fetchIncomeReport()
     }
 
-    val data : List<Expense> = vm2.incomeList
+    val data : List<Income> = vm2.incomeList
 
 
     // Tampilkan layar hanya jika data sudah diisi

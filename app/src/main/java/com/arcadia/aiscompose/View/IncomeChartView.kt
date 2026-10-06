@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.components.XAxis
-import com.arcadia.aiscompose.Model.Expense
+import com.arcadia.aiscompose.Model.Income
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import androidx.compose.runtime.*
 import androidx.compose.material3.*
@@ -20,7 +20,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import androidx.compose.foundation.isSystemInDarkTheme
 
 @Composable
-fun IncomeChartView(incomes: List<Expense>) {
+fun IncomeChartView(incomes: List<Income>) {
     val isDarkTheme = isSystemInDarkTheme()
     Column {
         Spacer(modifier = Modifier.height(48.dp))

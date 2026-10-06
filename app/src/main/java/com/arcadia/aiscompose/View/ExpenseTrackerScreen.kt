@@ -34,6 +34,7 @@ import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseTrackerScreen(token: String) {
     //val vm: COAViewModel = viewModel()
@@ -63,7 +64,6 @@ fun ExpenseTrackerScreen(token: String) {
         vm2.fetchExpense()
         vm.fetchCOAExpense()
         vm.fetchCOATrans()
-
     }
 
     LaunchedEffect(transaction) {
@@ -76,12 +76,16 @@ fun ExpenseTrackerScreen(token: String) {
     //val transactionList by vm2.transactionList.collectAsState()
     val transactionList : List<TransactionView> = vm2.transactionList
     val coaList : List<COAItem> = vm.coatransList
+
+
     var showBalance by remember { mutableStateOf(false) }
+
+    Log.d("COA_UI", "size=${coaList.size}, names=${coaList.map { it.coa_name }}")
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .safeDrawingPadding()
     ) {
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -122,45 +126,70 @@ fun ExpenseTrackerScreen(token: String) {
                     TextButton(onClick = { transactionExpanded = true }) {
                         Text(transaction)
                     }
-                    DropdownMenu(
-                        expanded = transactionExpanded,
-                        onDismissRequest = { transactionExpanded = false }
-                    ) {
-                        coaList.forEach { item ->
-                            DropdownMenuItem(
-                                text = { Text(item.coa_name) },
-                                onClick = {
-                                    transaction = item.route_name  // Simpan value (route_name)
-                                    transactionExpanded = false
-                                }
-                            )
-                        }
-//                        listOf(
-//                            "Allo Bank",
-//                            "Blu",
-//                            "BCA",
-//                            "Cash",
-//                            "CIMB",
-//                            "Dana",
-//                            "Flazz",
-//                            "GoPay",
-//                            "Hana",
-//                            "HSBC",
-//                            "Mandiri",
-//                            "Octo",
-//                            "Ovo",
-//                            "Permata",
-//                            "ShopeePay"
-//                        ).forEach {
+//                    DropdownMenu(
+//                        expanded = transactionExpanded,
+//                        onDismissRequest = { transactionExpanded = false }
+//                    ) {
+//                        coaList.forEach { item ->
 //                            DropdownMenuItem(
-//                                text = { Text(it) },
+//                                text = { Text(item.coa_name) },
 //                                onClick = {
-//                                    transaction = it
+//                                    transaction = item.route_name  // Simpan value (route_name)
 //                                    transactionExpanded = false
 //                                }
 //                            )
 //                        }
+////                        listOf(
+////                            "Allo Bank",
+////                            "Blu",
+////                            "BCA",
+////                            "Cash",
+////                            "CIMB",
+////                            "Dana",
+////                            "Flazz",
+////                            "GoPay",
+////                            "Hana",
+////                            "HSBC",
+////                            "Mandiri",
+////                            "Octo",
+////                            "Ovo",
+////                            "Permata",
+////                            "ShopeePay"
+////                        ).forEach {
+////                            DropdownMenuItem(
+////                                text = { Text(it) },
+////                                onClick = {
+////                                    transaction = it
+////                                    transactionExpanded = false
+////                                }
+////                            )
+////                        }
+//                    }
+
+                    DropdownMenu(
+                        expanded = transactionExpanded,
+                        onDismissRequest = {
+                            transactionExpanded = false
+                        },
+                        modifier = Modifier.heightIn(max = 600.dp)
+                    ) {
+                        coaList.forEach { item ->
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = item.coa_name,
+                                        maxLines = 1
+                                    )
+                                },
+                                onClick = {
+                                    transaction = item.route_name
+                                    transactionExpanded = false
+                                }
+                            )
+                        }
                     }
+// di atas, satu kali saja
 
 //                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 //
@@ -246,7 +275,11 @@ fun ExpenseTrackerScreen(token: String) {
 
         // COA Dropdown
         //Text("COA")
-        Box(modifier = Modifier.fillMaxWidth())
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            //.padding(8.dp)
+        )
         {
             //OutlinedButton(onClick = { coaExpanded = true }, modifier = Modifier.fillMaxWidth()) {
             //    Text(selectedCOAId?.toString() ?: "Pilih COA")
@@ -369,7 +402,9 @@ fun ExpenseTrackerScreen(token: String) {
         )
         Spacer(modifier = Modifier.height(3.dp))
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(modifier = Modifier
+            .weight(1f)
+            .navigationBarsPadding()) {
             items(transactionList.size) { index ->
                 TransactionItem(transactionList[index])
             }

@@ -73,7 +73,8 @@ fun IncomeTrackerScreen(token: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(4.dp)
+            .safeDrawingPadding()
+//            .padding(4.dp)
     ) {
         Spacer(modifier = Modifier.height(48.dp))
 
@@ -276,7 +277,10 @@ fun IncomeTrackerScreen(token: String) {
         )
         Spacer(modifier = Modifier.height(3.dp))
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(modifier = Modifier
+            .weight(1f)
+            .navigationBarsPadding()
+        ) {
             items(transactionList.size) { index ->
                 TransactionItem(transactionList[index])
             }
