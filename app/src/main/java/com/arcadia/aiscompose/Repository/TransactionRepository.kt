@@ -1,8 +1,5 @@
 package com.arcadia.aiscompose.Repository
 
-import android.util.Log
-import com.arcadia.aiscompose.AssetApi
-import com.arcadia.aiscompose.Model.Assets
 import com.arcadia.aiscompose.Model.BalanceResponse
 import com.arcadia.aiscompose.Model.COAAccess
 import com.arcadia.aiscompose.Model.COAItem
@@ -12,7 +9,6 @@ import com.arcadia.aiscompose.Model.DailyReport
 import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.Income
 import com.arcadia.aiscompose.Model.InsuranceItem
-import com.arcadia.aiscompose.Model.LogoutRequest
 import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Model.PriorityItem
 import com.arcadia.aiscompose.Model.TaxItem
@@ -24,10 +20,6 @@ import com.arcadia.aiscompose.Model.TransactionWithType
 import com.arcadia.aiscompose.TransactionApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
 
 object TransactionRepository {
     private val api: TransactionApi
@@ -44,12 +36,16 @@ object TransactionRepository {
     }
 
     suspend fun getBalance(token: String,coaId: String): List<BalanceResponse> {
-        return api.getBalanceByCOA("Bearer $token",coaId,)
+        return api.getBalanceByCOA("Bearer $token",coaId)
 //        return api.getBalanceByCOA("Bearer $token",coaId,).map { it.Balance }
     }
 
     suspend fun getExpense(token: String): List<TransactionView> {
         return api.getExpense("Bearer $token")
+    }
+
+    suspend fun getExpenseByCoa(token: String,coaId: String): List<TransactionView> {
+        return api.getExpenseByCoa("Bearer $token",coaId)
     }
 
     suspend fun getIncome(token: String): List<TransactionView> {
@@ -90,6 +86,10 @@ object TransactionRepository {
 
     suspend fun getCOATrans(token: String): List<COAItem> {
         return api.getCOATrans("Bearer $token")
+    }
+
+    suspend fun getCOAAll(token: String): List<COAItem> {
+        return api.getCOAAll("Bearer $token")
     }
 
     suspend fun getCOAIncome(token: String): List<COAItem> {
@@ -212,7 +212,6 @@ object TransactionRepository {
         return api.submitPermataIncome("Bearer $token",expense)
     }
     suspend fun getCOAAceess(token: String): List<COAAccess> {
-        Log.d("COAAcces", "token in rep: ${token}")
         return api.getCOAAccess("Bearer $token")
     }
     suspend fun saveCOAAccess(token: String,selectedItems: List<CoaUserPostDTO>) {

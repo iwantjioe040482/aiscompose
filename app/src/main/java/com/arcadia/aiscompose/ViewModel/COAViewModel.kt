@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.arcadia.aiscompose.Model.COAItem
 import com.arcadia.aiscompose.Repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -71,4 +70,18 @@ class COAViewModel  : ViewModel() {
             }
         }
     }
+
+    fun fetchCOAAll() {
+        viewModelScope.launch {
+            try {
+                val data = TransactionRepository.getCOAAll(token.value)
+                _coatransList.clear()          // 🔴 Hapus data lama
+                _coatransList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 }

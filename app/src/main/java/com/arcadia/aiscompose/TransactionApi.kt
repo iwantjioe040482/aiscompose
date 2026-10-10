@@ -24,6 +24,9 @@ interface TransactionApi {
     @GET("COAExpense")
     suspend fun getCOAList(@Header("Authorization") token: String): List<COAItem>
 
+    @GET("COAAll")
+    suspend fun getCOAAll(@Header("Authorization") token: String): List<COAItem>
+
     @GET("COATrans")
     suspend fun getCOATrans(@Header("Authorization") token: String): List<COAItem>
 
@@ -61,6 +64,9 @@ interface TransactionApi {
 
     @GET("expense")
     suspend fun getExpense(@Header("Authorization") token: String): List<TransactionView>
+
+    @GET("expensebycoa/{coaId}")
+    suspend fun getExpenseByCoa(@Header("Authorization") token: String,@Path("coaId") id: String): List<TransactionView>
 
     @GET("income")
     suspend fun getIncome(@Header("Authorization") token: String): List<TransactionView>

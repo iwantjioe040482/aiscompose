@@ -4,6 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
 
+//class TransactionViewModelFactory(private val token: String) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return TransactionViewModel(token) as T
+//        }
+//
+//        throw IllegalArgumentException(
+//            "Unknown ViewModel class: ${modelClass.name}"
+//        )
+//    }
+//}
+
 class TransactionViewModelFactory(private val token: String) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {

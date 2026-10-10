@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.remember
 import com.arcadia.aiscompose.ViewModel.SidebarViewModel
 import com.arcadia.aiscompose.Model.MenuItem
 import androidx.compose.foundation.rememberScrollState
@@ -312,7 +315,10 @@ fun MenuItemView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = indent, top = 8.dp, bottom = 8.dp)
-                .clickable {
+                .clickable ( interactionSource = remember {
+                    MutableInteractionSource()
+                },
+                    indication = null){
                     when {
                         isExpandable -> {
                             expandedMap[item.id] = !(expandedMap[item.id] ?: false)
@@ -322,7 +328,7 @@ fun MenuItemView(
                             val token = tokenState.value
 
                             if (!token.isNullOrBlank()) {
-                                coroutineScope.launch {
+                                coroutineScope.launch {.
                                     viewModel.logout(token)
                                     tokenState.value = null // 🔥 Token dihapus
                                     onLogout()

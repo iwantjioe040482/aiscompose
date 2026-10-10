@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.compose.foundation:foundation:1.6.7") // <-- WAJIB untuk layout
     implementation("androidx.compose.ui:ui:1.6.7")
@@ -59,7 +60,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation ("com.github.PhilJay:MPAndroidChart:3.1.0")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")

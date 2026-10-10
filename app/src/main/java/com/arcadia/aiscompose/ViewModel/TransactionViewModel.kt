@@ -310,6 +310,22 @@ class TransactionViewModel  : ViewModel() {
         }
     }
 
+    fun fetchExpenseByCoa(coaId: String) {
+        viewModelScope.launch {
+            try {
+//                val data = api.getExpense()
+//                _transactionList.value = data
+                val data = TransactionRepository.getExpenseByCoa(token.value,coaId)
+                _transactionList.clear()          // 🔴 Hapus data lama
+                _transactionList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
     fun fetchExpense() {
         viewModelScope.launch {
             try {

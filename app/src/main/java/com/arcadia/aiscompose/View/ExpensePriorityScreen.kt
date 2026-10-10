@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.padding
-import com.arcadia.aiscompose.Model.CreditCardItem
-import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import kotlinx.coroutines.delay
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton

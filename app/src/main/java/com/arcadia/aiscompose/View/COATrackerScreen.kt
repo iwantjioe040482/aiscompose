@@ -2,7 +2,6 @@ package com.arcadia.aiscompose.View
 
 
 import androidx.compose.runtime.*
-import com.arcadia.aiscompose.Model.Transaction
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,25 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arcadia.aiscompose.ViewModel.COAViewModel
 import com.arcadia.aiscompose.ViewModel.TransactionViewModel
-import java.time.LocalDate
-import androidx.compose.runtime.collectAsState
 import com.arcadia.aiscompose.Model.BalanceResponse
 import com.arcadia.aiscompose.Model.TransactionView
-import com.arcadia.aiscompose.Model.WaterView
 import com.arcadia.aiscompose.Repository.COAViewModelFactory
-import com.arcadia.aiscompose.ViewModel.WaterViewModel
-import com.arcadia.aiscompose.Repository.TransactionRepository
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
-import com.arcadia.aiscompose.Repository.WaterViewModelFactory
 import androidx.compose.ui.text.style.TextAlign
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import com.arcadia.aiscompose.Model.COAItem
-import java.util.TimeZone
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 
@@ -45,29 +33,24 @@ fun COATrackerScreen(token: String) {
     val vm: COAViewModel = viewModel(factory = factory2)
 
     var transaction by remember { mutableStateOf("Cash") }
+    var coaname by remember { mutableStateOf("Cash") }
     var transactionExpanded by remember { mutableStateOf(false) }
 
-    var selectedCOAId by remember { mutableStateOf<Int?>(null) }
-    var coaExpanded by remember { mutableStateOf(false) }
 
-    var description by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
-
-    var priority by remember { mutableStateOf("Keinginan") }
-    var priorityExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(token) {
         vm2.setToken(token)
         vm.setToken(token)
 
         vm2.fetchExpense()
-        vm.fetchCOAExpense()
-        vm.fetchCOATrans()
+//        vm.fetchCOAExpense()
+        vm.fetchCOAAll()
 
     }
 
     LaunchedEffect(transaction) {
         vm2.fetchBalanceByCOA(transaction)
+        vm2.fetchExpenseByCoa(coaname)
     }
 
 
@@ -131,6 +114,7 @@ fun COATrackerScreen(token: String) {
                                 text = { Text(item.coa_name) },
                                 onClick = {
                                     transaction = item.route_name  // Simpan value (route_name)
+                                    coaname=item.coa_name
                                     transactionExpanded = false
                                 }
                             )
