@@ -328,7 +328,7 @@ fun MenuItemView(
                             val token = tokenState.value
 
                             if (!token.isNullOrBlank()) {
-                                coroutineScope.launch {.
+                                coroutineScope.launch {
                                     viewModel.logout(token)
                                     tokenState.value = null // 🔥 Token dihapus
                                     onLogout()

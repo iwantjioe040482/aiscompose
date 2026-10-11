@@ -48,7 +48,7 @@ fun COATrackerScreen(token: String) {
 
     }
 
-    LaunchedEffect(transaction) {
+    LaunchedEffect(coaname) {
         vm2.fetchBalanceByCOA(transaction)
         vm2.fetchExpenseByCoa(coaname)
     }
@@ -103,7 +103,7 @@ fun COATrackerScreen(token: String) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = { transactionExpanded = true }) {
-                        Text(transaction)
+                        Text(coaname)
                     }
                     DropdownMenu(
                         expanded = transactionExpanded,
