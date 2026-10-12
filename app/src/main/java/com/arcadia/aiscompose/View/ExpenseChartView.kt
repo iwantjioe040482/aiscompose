@@ -1,13 +1,11 @@
 package com.arcadia.aiscompose.View
 
-import android.util.Log
 import android.graphics.Color as AndroidColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.*
@@ -18,11 +16,16 @@ import androidx.compose.runtime.*
 import androidx.compose.material3.*
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.safeDrawingPadding
 
 @Composable
 fun ExpenseChartView(expenses: List<Expense>) {
     val isDarkTheme = isSystemInDarkTheme()
-    Column {
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+    ){
         Spacer(modifier = Modifier.height(48.dp))
         //var selectedCoa by remember { mutableStateOf<String?>(null) }
             val coaList = expenses

@@ -29,6 +29,11 @@ import com.github.mikephil.charting.utils.ColorTemplate
 @Composable
 fun GroupExpensePieChart(data: List<Expense>) {
     val isDarkTheme = isSystemInDarkTheme()
+    val legendColor = if (isDarkTheme) {
+        AndroidColor.WHITE
+    } else {
+        AndroidColor.BLACK
+    }
 
     // Filter data untuk bulan terbaru
     val latestMonth = data.maxByOrNull { it.gl_month }?.gl_month

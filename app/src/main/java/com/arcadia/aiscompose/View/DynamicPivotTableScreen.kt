@@ -10,11 +10,10 @@ import androidx.compose.ui.unit.dp
 import com.arcadia.aiscompose.Model.DynamicPivot
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.safeDrawingPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,8 +37,12 @@ fun DynamicPivotTableScreen(data: List<DynamicPivot>) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(32.dp))
             Text("Data size: ${data.size}", style = MaterialTheme.typography.labelSmall)
 
@@ -55,13 +58,28 @@ fun DynamicPivotTableScreen(data: List<DynamicPivot>) {
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
                 ) {
-                    TextField(
+//                    TextField(
+//                        value = selectedUnit,
+//                        onValueChange = {},
+//                        readOnly = true,
+//                        label = { Text("View In") },
+//                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+//                        modifier = Modifier.menuAnchor()
+//                    )
+                    OutlinedTextField(
                         value = selectedUnit,
                         onValueChange = {},
                         readOnly = true,
+                        singleLine = true,
                         label = { Text("View In") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor()
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = expanded
+                            )
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
                     )
 
                     ExposedDropdownMenu(
@@ -107,7 +125,9 @@ fun DynamicPivotTableScreen(data: List<DynamicPivot>) {
 
             Divider()
 
-            LazyColumn {
+            LazyColumn (
+                modifier = Modifier.weight(1f)
+            ){
                 items(data.size) { index ->
                     val row = data[index]
                     Row(

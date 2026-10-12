@@ -9,22 +9,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.padding
-import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Repository.TransactionViewModelFactory
 import kotlinx.coroutines.delay
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import com.arcadia.aiscompose.Model.Expense
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.fillMaxSize
 
 @Composable
 fun GroupExpenseScreen(token: String) {
@@ -56,8 +55,11 @@ fun GroupExpenseScreen(token: String) {
     // Tampilkan layar hanya jika data sudah diisi
     if (data.isNotEmpty()) {
 
-        Column(modifier = Modifier
-            .padding(8.dp)) {
+        Column( modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .padding(8.dp)
+        ) {
             Spacer(modifier = Modifier.height(64.dp))
 
 //            LazyColumn {

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.*
 import com.github.mikephil.charting.utils.MPPointF
 import androidx.compose.foundation.isSystemInDarkTheme
 import com.arcadia.aiscompose.Model.DailyReport
+import androidx.compose.foundation.layout.safeDrawingPadding
 
 @Composable
 fun DailyExpenseChartView(data: List<DailyReport>) {
@@ -27,13 +28,13 @@ fun DailyExpenseChartView(data: List<DailyReport>) {
         .sortedBy { it.gl_date }
         .map { it.gl_date.substring(5) } // Show only MM-DD
 
-
-
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp) // ✅ Ubah ukuran sesuai kebutuhan
-            .padding(top = 64.dp), // ✅ geser turun 16dp dari atas
+            .padding(top = 64.dp)
+            .safeDrawingPadding(),
+//            .padding(top = 64.dp), // ✅ geser turun 16dp dari atas
         //            .padding(8.dp),
         factory = { context: Context ->
             LineChart(context).apply {
