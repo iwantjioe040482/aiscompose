@@ -43,8 +43,10 @@ class SidebarViewModel : ViewModel() {
                                     MenuItem(route = "Expense", label = "Expense Monthly", id = "Expense"),
                                     MenuItem(route = "ExpensePriority", label = "Expense Priority Monthly", id = "ExpensePriority"),
                                     MenuItem(route = "GroupExpense", label = "Group Expense Monthly", id = "GroupExpense"),
+                                    MenuItem(route = "GroupExpensePivot", label = "Group Expense Monthly Pivot", id = "GroupExpensePivot"),
                                     MenuItem(route = "IncomePivot", label = "Income Monthly Pivot", id = "IncomePivot"),
                                     MenuItem(route = "Income", label = "Income Monthly", id = "Income"),
+                                    MenuItem(route = "GroupIncome", label = "Group Income Monthly", id = "GroupIncome"),
                                 )
                             ),
                             MenuItem(route = "COA", label = "Chart Of Account", id = "COA"),

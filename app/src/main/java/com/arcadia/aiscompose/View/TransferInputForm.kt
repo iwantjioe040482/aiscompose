@@ -174,7 +174,13 @@ fun TransferInputForm(token: String) {
             // Submit Button
             Button(
                 onClick = {
-                    vm2.submitTransfer(source, destination, amountText.toDoubleOrNull() ?: 0.0)
+                    if (amountText.isNotBlank())
+                    {
+                        vm2.submitTransfer(source, destination, amountText.toDoubleOrNull() ?: 0.0)
+                        source =paymentOptions.first()
+                        destination=paymentOptions.last()
+                        amountText=""
+                    }
 //                isSending = true
 //                result = null
 //                val transferRequest = TransferRequest(from, to, amount.toIntOrNull() ?: 0)

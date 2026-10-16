@@ -45,6 +45,9 @@ interface TransactionApi {
     @GET("groupmonthlyexpense")
     suspend fun getGroupExpense(@Header("Authorization") token: String): List<Expense>
 
+    @GET("groupmonthlyincome")
+    suspend fun getGroupIncome(@Header("Authorization") token: String): List<Expense>
+
     @GET("priorityreport")
     suspend fun getPriorityReport(@Header("Authorization") token: String): List<PriorityItem>
 
@@ -53,6 +56,10 @@ interface TransactionApi {
 
     @GET("pivot")
     suspend fun getPivot(@Header("Authorization") token: String): List<MonthlyPivot>
+    //suspend fun getPivot(@Header("Authorization") token: String): List<Map<String, String>>
+
+    @GET("groupexpensemonthlypivot")
+    suspend fun getGroupExpenseMonthlyPivot(@Header("Authorization") token: String): List<MonthlyPivot>
     //suspend fun getPivot(@Header("Authorization") token: String): List<Map<String, String>>
 
     @GET("cashflow")

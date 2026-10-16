@@ -27,6 +27,12 @@ object PivotMonthlyRepository {
         return api.getPivot("Bearer $token")
     }
 
+    suspend fun getGroupExpenseMonthlyPivot(token: String): List<MonthlyPivot> {
+        Log.d("PivotReport", "token in rep: ${token}")
+
+        return api.getGroupExpenseMonthlyPivot("Bearer $token")
+    }
+
     suspend fun getCashFlow(token: String): List<MonthlyPivot> {
         Log.d("CashflowReport", "token in rep: ${token}")
 

@@ -105,6 +105,9 @@ class TransactionViewModel  : ViewModel() {
     private val _groupexpenseList = mutableStateListOf<Expense>()
     val groupexpenseList: List<Expense> get() = _groupexpenseList
 
+    private val _groupincomeList = mutableStateListOf<Expense>()
+    val groupincomeList: List<Expense> get() = _groupincomeList
+
     private val _incomeList = mutableStateListOf<Income>()
     val incomeList: List<Income> get() = _incomeList
 
@@ -197,6 +200,20 @@ class TransactionViewModel  : ViewModel() {
                 val data = TransactionRepository.getGroupExpense(token.value)
                 _groupexpenseList.clear()          // 🔴 Hapus data lama
                 _groupexpenseList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun fetchGroupIncome() {
+        viewModelScope.launch {
+            try {
+
+                val data = TransactionRepository.getGroupIncome(token.value)
+                _groupincomeList.clear()          // 🔴 Hapus data lama
+                _groupincomeList.addAll (data)
 
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -53,16 +53,16 @@ fun ExpensePriorityScreen(token: String) {
     if (data.isNotEmpty()) {
 
         Column(modifier = Modifier
-            .padding(8.dp)) {
-            Spacer(modifier = Modifier.height(32.dp))
+            .padding(4.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn {
                 items(data) { item: PriorityItem ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp)
-                            .padding(16.dp)
+                            .height(500.dp)
+                            .padding(8.dp)
                     ) {
                         ExpensePriorityChartView(data = listOf(item)) // 👈 satu chart per item
                     }

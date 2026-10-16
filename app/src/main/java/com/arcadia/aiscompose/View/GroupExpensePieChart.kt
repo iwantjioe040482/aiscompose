@@ -48,17 +48,46 @@ fun GroupExpensePieChart(data: List<Expense>) {
                     PieEntry(it.total.toFloat(), it.coa_name)
                 }
 
-                val dataSet = PieDataSet(entries, "")
-                dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
-                dataSet.valueTextSize = 14f
-                dataSet.sliceSpace = 3f
+                // Palet warna tambahan
+                val chartColors = listOf(
+                    AndroidColor.rgb(244, 67, 54),
+                    AndroidColor.rgb(33, 150, 243),
+                    AndroidColor.rgb(76, 175, 80),
+                    AndroidColor.rgb(255, 193, 7),
+                    AndroidColor.rgb(156, 39, 176),
+                    AndroidColor.rgb(0, 188, 212),
+                    AndroidColor.rgb(255, 87, 34),
+                    AndroidColor.rgb(121, 85, 72),
+                    AndroidColor.rgb(63, 81, 181),
+                    AndroidColor.rgb(205, 220, 57),
+                    AndroidColor.rgb(233, 30, 99),
+                    AndroidColor.rgb(0, 150, 136),
+                    AndroidColor.rgb(103, 58, 183),
+                    AndroidColor.rgb(158, 158, 158),
+                    AndroidColor.rgb(255, 152, 0)
+                )
+
+//                val dataSet = PieDataSet(entries, "")
+//                dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
+//                dataSet.valueTextSize = 14f
+//                dataSet.sliceSpace = 3f
+
+
+
+                val dataSet = PieDataSet(entries, "").apply {
+                    colors = List(entries.size) { index ->
+                        chartColors[index % chartColors.size]
+                    }
+                    valueTextSize = 12f
+                    sliceSpace = 3f
+                }
 
                 val pieData = PieData(dataSet)
 
                 this.data = pieData
                 this.description.isEnabled = false
                 //this.setUsePercentValues(true)
-                this.centerText = "Expense $latestMonth"
+                this.centerText = "Bulan $latestMonth"
                 this.setCenterTextSize(18f)
 
                 val legendColor = if (isDarkTheme) AndroidColor.WHITE else AndroidColor.BLACK
@@ -84,6 +113,22 @@ fun GroupExpensePieChart(data: List<Expense>) {
                 this.invalidate()
             }
         },
+//        update = { chart ->
+//            val textColor = if (isDarkTheme) {
+//                AndroidColor.WHITE
+//            } else {
+//                AndroidColor.BLACK
+//            }
+//
+//            // Warna tulisan di tengah grafik
+//            chart.setCenterTextColor(textColor)
+//
+//            // Warna label kategori dan legend
+//            chart.setEntryLabelColor(textColor)
+//            chart.legend.textColor = textColor
+//
+//            chart.invalidate()
+//        },
         modifier = Modifier
             .height(400.dp)
             .fillMaxWidth()

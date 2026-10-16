@@ -1,9 +1,7 @@
 package com.arcadia.aiscompose.View
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart
@@ -17,15 +15,12 @@ import com.arcadia.aiscompose.Model.PriorityItem
 import androidx.compose.foundation.isSystemInDarkTheme
 import com.github.mikephil.charting.formatter.PercentFormatter
 import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 
 @Composable
     fun ExpensePriorityChartView(data: List<PriorityItem>
@@ -112,8 +107,9 @@ import androidx.compose.ui.Modifier
             }
         },
             modifier = Modifier
-                .height(600.dp) // ✅ Ukuran diperlukan agar AndroidView bisa tampil
+                .height(400.dp) // ✅ Ukuran diperlukan agar AndroidView bisa tampil
                 .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.safeDrawing)
         )
 //
 //        // Teks di tengah chart dengan background

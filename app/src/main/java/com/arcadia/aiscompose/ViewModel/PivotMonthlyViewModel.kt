@@ -35,6 +35,10 @@ class PivotMonthlyViewModel() : ViewModel(){
     private val _dynamiccashflowlist = mutableStateListOf<DynamicPivot>()
     val dynamiccashflowlist: List<DynamicPivot> get() = _dynamiccashflowlist
 
+
+    private val _dynamicgrpoupexplist = mutableStateListOf<DynamicPivot>()
+    val dynamicgrpoupexplist: List<DynamicPivot> get() = _dynamicgrpoupexplist
+
     private val api: TransactionApi
 
     init {
@@ -121,6 +125,26 @@ class PivotMonthlyViewModel() : ViewModel(){
 
             _dynamiccashflowlist.clear()          // 🔴 Hapus data lama
             _dynamiccashflowlist.addAll (parsedList)
+
+            pivotList.clear()
+            pivotList.add(data)
+            //pivotList.value = response
+        }
+    }
+    fun fetchGroupExpenseMonthlyPivot() {
+        viewModelScope.launch {
+//            val response = api.getPivot() // ambil dari API/Room
+//            val parsedList = parseJsonToPivot(response)
+//            dynamiclist.value= parsedList
+            Log.d("PivotReport", "token: ${token.value}")
+
+            val data = PivotMonthlyRepository.getGroupExpenseMonthlyPivot(token.value)
+            Log.d("PivotReport", "data size: ${data.size}")
+            val parsedList = parseJsonToPivot(data)
+            Log.d("PivotReport", "parsedList size: ${parsedList.size}")
+
+            _dynamicgrpoupexplist.clear()          // 🔴 Hapus data lama
+            _dynamicgrpoupexplist.addAll (parsedList)
 
             pivotList.clear()
             pivotList.add(data)
