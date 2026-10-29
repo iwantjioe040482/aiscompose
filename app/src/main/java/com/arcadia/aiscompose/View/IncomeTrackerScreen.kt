@@ -252,7 +252,7 @@ fun IncomeTrackerScreen(token: String) {
                     vm2.submitIncomes(transaction, newExpense,
                         onSuccess = {
                             vm2.fetchBalanceByCOA(transaction)
-                            vm2.fetchExpense()
+                            vm2.fetchIncome()
                             amount = ""
                             description = ""
                         },
