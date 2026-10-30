@@ -6,6 +6,7 @@ import com.arcadia.aiscompose.Model.Transaction
 import com.arcadia.aiscompose.Model.TransactionView
 import com.arcadia.aiscompose.Model.BalanceResponse
 import com.arcadia.aiscompose.Model.COAAccess
+import com.arcadia.aiscompose.Model.CashFlow
 import com.arcadia.aiscompose.Model.CoaUserPostDTO
 import com.arcadia.aiscompose.Model.MonthlyPivot
 import com.arcadia.aiscompose.Model.TaxItem
@@ -60,6 +61,10 @@ interface TransactionApi {
 
     @GET("groupexpensemonthlypivot")
     suspend fun getGroupExpenseMonthlyPivot(@Header("Authorization") token: String): List<MonthlyPivot>
+    //suspend fun getPivot(@Header("Authorization") token: String): List<Map<String, String>>
+
+    @GET("cash")
+    suspend fun getCash(@Header("Authorization") token: String): List<CashFlow>
     //suspend fun getPivot(@Header("Authorization") token: String): List<Map<String, String>>
 
     @GET("cashflow")

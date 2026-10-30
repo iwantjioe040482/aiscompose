@@ -15,6 +15,7 @@ import com.arcadia.aiscompose.Model.MonthlyPivot
 import com.arcadia.aiscompose.Model.TransferRequest
 import com.arcadia.aiscompose.Model.TransferResponse
 import com.arcadia.aiscompose.Model.TaxItem
+import com.arcadia.aiscompose.Model.CashFlow
 import com.arcadia.aiscompose.Model.Transaction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,7 @@ import com.arcadia.aiscompose.Repository.WaterRepository
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.livedata.observeAsState
 import com.arcadia.aiscompose.Model.CoaUserPostDTO
+import com.arcadia.aiscompose.Model.DynamicPivot
 import com.arcadia.aiscompose.Model.Income
 import com.arcadia.aiscompose.Model.MaintenanceItem
 import com.arcadia.aiscompose.Model.PriorityItem
@@ -113,6 +115,9 @@ class TransactionViewModel  : ViewModel() {
 
     private val _transferResult = MutableStateFlow<List<TransferResponse?>>(emptyList())
     val transferResult: StateFlow<List<TransferResponse?>> = _transferResult
+
+    private val _dynamiccashflowlist = mutableStateListOf<CashFlow>()
+    val dynamiccashflowlist: List<CashFlow> get() = _dynamiccashflowlist
 
     private val api: TransactionApi
 
@@ -366,6 +371,21 @@ class TransactionViewModel  : ViewModel() {
                 val data = TransactionRepository.getIncome(token.value)
                 _transactionincomeList.clear()          // 🔴 Hapus data lama
                 _transactionincomeList.addAll (data)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun fetchCash() {
+        viewModelScope.launch {
+            try {
+//                val data = api.getExpense()
+//                _transactionList.value = data
+                val data = TransactionRepository.getCash(token.value)
+                _dynamiccashflowlist.clear()          // 🔴 Hapus data lama
+                _dynamiccashflowlist.addAll (data)
 
             } catch (e: Exception) {
                 e.printStackTrace()

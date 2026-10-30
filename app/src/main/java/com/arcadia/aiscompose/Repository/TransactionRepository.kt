@@ -3,6 +3,7 @@ package com.arcadia.aiscompose.Repository
 import com.arcadia.aiscompose.Model.BalanceResponse
 import com.arcadia.aiscompose.Model.COAAccess
 import com.arcadia.aiscompose.Model.COAItem
+import com.arcadia.aiscompose.Model.CashFlow
 import com.arcadia.aiscompose.Model.CoaUserPostDTO
 import com.arcadia.aiscompose.Model.CreditCardItem
 import com.arcadia.aiscompose.Model.DailyReport
@@ -10,6 +11,7 @@ import com.arcadia.aiscompose.Model.Expense
 import com.arcadia.aiscompose.Model.Income
 import com.arcadia.aiscompose.Model.InsuranceItem
 import com.arcadia.aiscompose.Model.MaintenanceItem
+import com.arcadia.aiscompose.Model.MonthlyPivot
 import com.arcadia.aiscompose.Model.PriorityItem
 import com.arcadia.aiscompose.Model.TaxItem
 import com.arcadia.aiscompose.Model.Transaction
@@ -20,6 +22,7 @@ import com.arcadia.aiscompose.Model.TransactionWithType
 import com.arcadia.aiscompose.TransactionApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Month
 
 object TransactionRepository {
     private val api: TransactionApi
@@ -104,6 +107,13 @@ object TransactionRepository {
         return api.postTransfer("Bearer $token",request)
     }
 
+    suspend fun getCashFlow(token: String):List<MonthlyPivot> {
+        return api.getCashFlow("Bearer $token")
+    }
+
+    suspend fun getCash(token: String):List<CashFlow> {
+        return api.getCash("Bearer $token")
+    }
     suspend fun getExpenseReport(token: String):List<Expense> {
         return api.getExpenseReport("Bearer $token")
     }

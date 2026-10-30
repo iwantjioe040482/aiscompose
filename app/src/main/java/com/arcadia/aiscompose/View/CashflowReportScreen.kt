@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.layout.fillMaxSize
+import com.arcadia.aiscompose.Model.CashFlow
 import com.arcadia.aiscompose.Model.DynamicPivot
+import com.arcadia.aiscompose.Model.MonthlyPivot
 import com.arcadia.aiscompose.Repository.PivotMonthlyViewModelFactory
 
 @Composable
